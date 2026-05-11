@@ -1,120 +1,142 @@
-import DangerButton from '@/Components/DangerButton';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import Modal from '@/Components/Modal';
-import SecondaryButton from '@/Components/SecondaryButton';
-import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import { useRef, useState } from 'react';
+import InputError from '@/Components/InputError';
 
-export default function DeleteUserForm({ className = '' }) {
-    const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
+function Icon({ name, className = '' }) {
+    return (
+        <span className={`material-symbols-outlined ${className}`}
+              style={{ fontVariationSettings: "'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24" }}>
+            {name}
+        </span>
+    );
+}
+
+export default function DeleteUserForm() {
+    const [confirming, setConfirming] = useState(false);
     const passwordInput = useRef();
 
-    const {
-        data,
-        setData,
-        delete: destroy,
-        processing,
-        reset,
-        errors,
-        clearErrors,
-    } = useForm({
+    const { data, setData, delete: destroy, processing, reset, errors, clearErrors } = useForm({
         password: '',
     });
 
-    const confirmUserDeletion = () => {
-        setConfirmingUserDeletion(true);
-    };
+    function openModal()  { setConfirming(true); }
+    function closeModal() { setConfirming(false); clearErrors(); reset(); }
 
-    const deleteUser = (e) => {
+    function submit(e) {
         e.preventDefault();
-
         destroy(route('profile.destroy'), {
             preserveScroll: true,
             onSuccess: () => closeModal(),
-            onError: () => passwordInput.current.focus(),
-            onFinish: () => reset(),
+            onError:   () => passwordInput.current?.focus(),
+            onFinish:  () => reset(),
         });
-    };
-
-    const closeModal = () => {
-        setConfirmingUserDeletion(false);
-
-        clearErrors();
-        reset();
-    };
+    }
 
     return (
-        <section className={`space-y-6 ${className}`}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">
-                    Delete Account
-                </h2>
-
-                <p className="mt-1 text-sm text-gray-600">
-                    Once your account is deleted, all of its resources and data
-                    will be permanently deleted. Before deleting your account,
-                    please download any data or information that you wish to
-                    retain.
-                </p>
-            </header>
-
-            <DangerButton onClick={confirmUserDeletion}>
-                Delete Account
-            </DangerButton>
-
-            <Modal show={confirmingUserDeletion} onClose={closeModal}>
-                <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-lg font-medium text-gray-900">
-                        Are you sure you want to delete your account?
+        <section>
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-6 pb-5 border-b border-red-500/20">
+                <div className="w-10 h-10 rounded-sm bg-red-500/10 flex items-center justify-center shrink-0">
+                    <Icon name="delete_forever" className="text-red-400 text-[20px]" />
+                </div>
+                <div>
+                    <h2 className="font-serif text-xl text-red-400 font-normal">
+                        Eliminar cuenta
                     </h2>
-
-                    <p className="mt-1 text-sm text-gray-600">
-                        Once your account is deleted, all of its resources and
-                        data will be permanently deleted. Please enter your
-                        password to confirm you would like to permanently delete
-                        your account.
+                    <p className="font-sans text-xs text-spa-on-light-dim dark:text-spa-on-dark-dim mt-0.5">
+                        Una vez eliminada, todos los datos serán borrados permanentemente
                     </p>
+                </div>
+            </div>
 
-                    <div className="mt-6">
-                        <InputLabel
-                            htmlFor="password"
-                            value="Password"
-                            className="sr-only"
-                        />
+            <button onClick={openModal}
+                    className="flex items-center gap-2 px-6 py-3 rounded-sm
+                               border border-red-500/30 text-red-400
+                               font-sans text-[11px] uppercase tracking-[0.2em] font-semibold
+                               hover:bg-red-500/10 hover:border-red-500/50 transition-all">
+                <Icon name="delete_forever" className="text-[15px]" />
+                Eliminar mi cuenta
+            </button>
 
-                        <TextInput
-                            id="password"
-                            type="password"
-                            name="password"
-                            ref={passwordInput}
-                            value={data.password}
-                            onChange={(e) =>
-                                setData('password', e.target.value)
-                            }
-                            className="mt-1 block w-3/4"
-                            isFocused
-                            placeholder="Password"
-                        />
+            {/* Modal confirmación */}
+            {confirming && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                     onClick={closeModal}>
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                    <div className="relative z-10 w-full max-w-md bg-white dark:bg-spa-surface-low
+                                    border border-red-500/20 rounded-sm shadow-2xl"
+                         onClick={e => e.stopPropagation()}>
 
-                        <InputError
-                            message={errors.password}
-                            className="mt-2"
-                        />
+                        {/* Header modal */}
+                        <div className="flex items-center justify-between px-6 py-5
+                                        border-b border-red-500/15">
+                            <div className="flex items-center gap-3">
+                                <Icon name="warning" className="text-red-400 text-[22px]" />
+                                <h3 className="font-serif text-lg text-spa-on-light dark:text-spa-on-dark">
+                                    ¿Eliminar tu cuenta?
+                                </h3>
+                            </div>
+                            <button onClick={closeModal}
+                                    className="text-spa-on-light-dim dark:text-spa-on-dark-dim
+                                               hover:text-spa-on-light dark:hover:text-spa-on-dark transition-colors">
+                                <Icon name="close" className="text-[20px]" />
+                            </button>
+                        </div>
+
+                        {/* Cuerpo modal */}
+                        <form onSubmit={submit} className="px-6 py-5 space-y-5">
+                            <p className="font-sans text-sm text-spa-on-light-dim dark:text-spa-on-dark-dim leading-relaxed">
+                                Esta acción es irreversible. Todos tus datos, citas e historial serán eliminados permanentemente. Ingresa tu contraseña para confirmar.
+                            </p>
+
+                            <div>
+                                <label className="block font-sans text-[10px] uppercase tracking-widest
+                                                   text-spa-on-light-dim dark:text-spa-on-dark-dim mb-2">
+                                    Contraseña
+                                </label>
+                                <input
+                                    type="password"
+                                    ref={passwordInput}
+                                    value={data.password}
+                                    onChange={e => setData('password', e.target.value)}
+                                    placeholder="Ingresa tu contraseña"
+                                    autoFocus
+                                    className="w-full bg-white dark:bg-spa-surface
+                                               border border-spa-border dark:border-gold/20 rounded-sm
+                                               px-4 py-3 font-sans text-sm
+                                               text-spa-on-light dark:text-spa-on-dark
+                                               placeholder:text-spa-on-light-dim/40 dark:placeholder:text-spa-on-dark-dim/40
+                                               focus:outline-none focus:border-red-400/60 transition-all"
+                                />
+                                <InputError message={errors.password} className="mt-1.5" />
+                            </div>
+
+                            <div className="flex gap-3 pt-1">
+                                <button type="button"
+                                        onClick={closeModal}
+                                        className="flex-1 py-3 border border-spa-border dark:border-gold/20
+                                                   rounded-sm font-sans text-[11px] uppercase tracking-wider
+                                                   text-spa-on-light-dim dark:text-spa-on-dark-dim
+                                                   hover:border-gold/40 transition-all">
+                                    Cancelar
+                                </button>
+                                <button type="submit"
+                                        disabled={processing || !data.password}
+                                        className="flex-1 py-3 bg-red-500/10 border border-red-500/30
+                                                   rounded-sm font-sans text-[11px] uppercase tracking-wider
+                                                   text-red-400 hover:bg-red-500/20 hover:border-red-500/50
+                                                   transition-all flex items-center justify-center gap-2
+                                                   disabled:opacity-40 disabled:cursor-not-allowed">
+                                    {processing
+                                        ? <><Icon name="autorenew" className="text-[13px] animate-spin" /> Eliminando...</>
+                                        : <><Icon name="delete_forever" className="text-[13px]" /> Sí, eliminar</>
+                                    }
+                                </button>
+                            </div>
+                        </form>
                     </div>
-
-                    <div className="mt-6 flex justify-end">
-                        <SecondaryButton onClick={closeModal}>
-                            Cancel
-                        </SecondaryButton>
-
-                        <DangerButton className="ms-3" disabled={processing}>
-                            Delete Account
-                        </DangerButton>
-                    </div>
-                </form>
-            </Modal>
+                </div>
+            )}
         </section>
     );
 }

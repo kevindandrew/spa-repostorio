@@ -15,9 +15,23 @@ use App\Http\Controllers\Cliente\ResenasController as ClienteResenas;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Models\Resena;
 
-// Raíz → login
-Route::get('/', fn() => redirect()->route('login'));
+// Raíz → landing page
+Route::get('/', function () {
+    $resenas = Resena::latest()
+        ->whereNotNull('comentario')
+        ->where('comentario', '!=', '')
+        ->limit(5)
+        ->get()
+        ->map(fn($r) => [
+            'calificacion' => $r->calificacion,
+            'comentario'   => $r->comentario,
+            'fecha'        => $r->created_at->format('d/m/Y'),
+        ]);
+
+    return Inertia::render('Welcome', ['resenas' => $resenas]);
+})->name('home');
 
 // ── ADMIN ──────────────────────────────────────────────
 Route::middleware(['auth', 'role:ADMIN'])
