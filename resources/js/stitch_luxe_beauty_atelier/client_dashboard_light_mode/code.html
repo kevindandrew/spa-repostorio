@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&amp;family=Montserrat:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#e4d7d6",
+                        "secondary-container": "#e5e2e1",
+                        "inverse-primary": "#e8c17f",
+                        "on-primary-fixed": "#271900",
+                        "surface-container": "#f9ebea",
+                        "secondary-fixed-dim": "#c9c6c5",
+                        "secondary-fixed": "#e5e2e1",
+                        "tertiary": "#495f85",
+                        "on-surface": "#211a1a",
+                        "on-primary-fixed-variant": "#5d420b",
+                        "on-secondary-fixed-variant": "#474646",
+                        "on-tertiary-container": "#283e62",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#eddfdf",
+                        "on-tertiary-fixed": "#001b3d",
+                        "surface-container-high": "#f3e5e5",
+                        "error-container": "#ffdad6",
+                        "on-secondary-container": "#656464",
+                        "primary-container": "#c9a465",
+                        "tertiary-fixed": "#d6e3ff",
+                        "secondary": "#5f5e5e",
+                        "surface-variant": "#eddfdf",
+                        "outline": "#807668",
+                        "surface-bright": "#fff8f7",
+                        "tertiary-fixed-dim": "#b1c7f3",
+                        "background": "#fff8f7",
+                        "tertiary-container": "#94aad4",
+                        "on-primary-container": "#533a03",
+                        "primary-fixed": "#ffdeaa",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#362f2f",
+                        "primary": "#775922",
+                        "inverse-on-surface": "#fceeed",
+                        "surface": "#fff8f7",
+                        "primary-fixed-dim": "#e8c17f",
+                        "on-surface-variant": "#4e4639",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#31476c",
+                        "surface-tint": "#775922",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "outline-variant": "#d1c5b5",
+                        "surface-container-low": "#fff0f0",
+                        "on-background": "#211a1a",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "xl": "80px",
+                        "lg": "48px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Cormorant Garamond"],
+                        "label-caps": ["Montserrat"],
+                        "body": ["Montserrat"],
+                        "button": ["Montserrat"],
+                        "h1": ["Cormorant Garamond"],
+                        "h2": ["Cormorant Garamond"]
+                    },
+                    "fontSize": {
+                        "h3": ["24px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.25em", "fontWeight": "600"}],
+                        "body": ["16px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                        "button": ["14px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "h1": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "h2": ["32px", {"lineHeight": "1.2", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .gold-gradient {
+            background: linear-gradient(135deg, #D4B782 0%, #C9A465 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF8F4] text-on-surface font-body selection:bg-primary-fixed-dim">
+<!-- TopAppBar -->
+<header class="h-20 w-full sticky top-0 z-40 bg-surface-container-lowest shadow-[0_2px_20px_rgba(0,0,0,0.06)]">
+<nav class="flex justify-between items-center px-gutter w-full max-w-container-max mx-auto h-full">
+<div class="flex items-center gap-base">
+<span class="font-h2 text-h2 uppercase tracking-[0.2em] text-primary">AURUM SALON</span>
+</div>
+<div class="hidden md:flex items-center space-x-lg">
+<a class="font-label-caps text-label-caps text-primary font-bold border-b-2 border-primary py-2" href="#">DASHBOARD</a>
+<a class="font-label-caps text-label-caps text-secondary hover:text-primary transition-colors duration-200 py-2" href="#">SERVICES</a>
+<a class="font-label-caps text-label-caps text-secondary hover:text-primary transition-colors duration-200 py-2" href="#">MY WALKS</a>
+<a class="font-label-caps text-label-caps text-secondary hover:text-primary transition-colors duration-200 py-2" href="#">TEAM</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-secondary hover:text-primary transition-colors focus-within:ring-1 focus-within:ring-primary/20 p-2">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors focus-within:ring-1 focus-within:ring-primary/20 p-2 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<div class="h-10 w-10 overflow-hidden rounded-full border border-outline-variant/30">
+<img alt="User Avatar" class="h-full w-full object-cover" data-alt="A sophisticated close-up portrait of a professional woman with a warm, welcoming expression, set against a blurred interior of a high-end luxury beauty salon. The lighting is soft and golden, mimicking a late afternoon glow. The color palette is composed of warm ivories, subtle champagnes, and deep blacks, maintaining a minimalist and prestigious editorial look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_q_zPnU6ApWFuLxpFG1NTiJq3OZ13PGvzDecc8hYw5gFQ3JU5tA9vEN-7Q-zaNAsdTkV-UbaAysmMeAwaDy1TbqVReNmiP917WUHcWn_UuwjzVYneKET4ntOpJrU0SXN8O5f_DM-qbUZ3PlJzSLboLUZmcfLxrELB7M3FN0eTma96M8kL6dMoP-Eeus7fEDAtqEiaiGp_kKxanDuqYA2GN-PhE-sSxFifQ6mOPJRXxtoqQTk9rmomq-XVIxwjV6nq5MuRMDYhcoI"/>
+</div>
+</div>
+</nav>
+</header>
+<main class="max-w-container-max mx-auto px-gutter py-lg">
+<!-- Hero: Your Next Appointment -->
+<section class="mb-xl">
+<h2 class="font-label-caps text-label-caps mb-md text-secondary">YOUR JOURNEY</h2>
+<div class="bg-surface-container-lowest shadow-[0_2px_20px_rgba(0,0,0,0.06)] overflow-hidden relative border-l-[6px] border-primary flex flex-col md:flex-row min-h-[300px]">
+<div class="flex-1 p-lg flex flex-col justify-center">
+<div class="flex items-center gap-xs mb-sm">
+<span class="font-label-caps text-[10px] bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-full uppercase tracking-widest">Confirmed</span>
+</div>
+<h1 class="font-h1 text-h1 text-on-surface mb-sm">Signature Sculpting Facial</h1>
+<p class="font-body text-body text-secondary max-w-md mb-md">With Master Aesthetician Julianne Moore. Your 90-minute escape into ultimate rejuvenation and skin luminosity.</p>
+<div class="flex flex-wrap gap-lg items-center mt-md">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">calendar_month</span>
+<div>
+<p class="font-label-caps text-label-caps text-[10px] text-secondary">DATE</p>
+<p class="font-body font-semibold">October 24, 2024</p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">schedule</span>
+<div>
+<p class="font-label-caps text-label-caps text-[10px] text-secondary">TIME</p>
+<p class="font-body font-semibold">2:30 PM — 4:00 PM</p>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full md:w-1/3 min-h-[200px]">
+<img alt="Salon Interior" class="h-full w-full object-cover" data-alt="An atmospheric, close-up photograph of a luxury spa treatment room. A pristine white massage table is visible with plush rolled towels. The lighting is low and warm, casting long shadows of indoor plants. The scene is dominated by a palette of warm ivory and champagne gold, emphasizing a serene, high-end, and ultra-minimalist aesthetic suitable for a premium beauty sanctuary." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAm1HRAQYKIcqztdLUvEnD5Av14xKuPcobVcIS6Vl9j-nduwuO4sszRQd7irXFOwmtlrB8m84jBM2v2PjAkJrw7sFMkkGFrCCQ9jWK5kBuFXVgu065MQ1w4u1W37hHWIHiXNzEKsISzctdZA_1WRPVhiiQ8JiM7vGklKsyoDGMoaWOp6Hh5kIf7KcaZcR1yQXkO357tiMePo6hBdSKrMTwW3FWLbfXwBYVTwhqszZiIyr2h_wJ5dAuYKcr9FGp8Gb7dJFS9D9kpbv8"/>
+</div>
+</div>
+</section>
+<!-- Bento Grid: Quick Actions & Stats -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl">
+<div class="bg-surface-container-lowest p-md shadow-[0_2px_20px_rgba(0,0,0,0.06)] flex flex-col justify-between group cursor-pointer hover:shadow-lg transition-shadow duration-300">
+<div class="flex justify-between items-start mb-lg">
+<div class="p-3 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">loyalty</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-secondary mb-xs">AURUM ELITE</p>
+<p class="font-h3 text-h3">2,450 Points</p>
+<p class="text-[12px] text-primary mt-2">1,550 points until Gold Status</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-md shadow-[0_2px_20px_rgba(0,0,0,0.06)] flex flex-col justify-between group cursor-pointer hover:shadow-lg transition-shadow duration-300">
+<div class="flex justify-between items-start mb-lg">
+<div class="p-3 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">history</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-secondary mb-xs">LAST VISIT</p>
+<p class="font-h3 text-h3">Hydra-Radiance Peel</p>
+<p class="text-[12px] text-secondary mt-2">September 12, 2024</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-md shadow-[0_2px_20px_rgba(0,0,0,0.06)] flex flex-col justify-between group cursor-pointer hover:shadow-lg transition-shadow duration-300">
+<div class="flex justify-between items-start mb-lg">
+<div class="p-3 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-secondary mb-xs">GIFT BALANCE</p>
+<p class="font-h3 text-h3">$150.00</p>
+<p class="text-[12px] text-secondary mt-2">Valid on all hair &amp; spa services</p>
+</div>
+</div>
+</section>
+<!-- Our Services Scroll -->
+<section class="mb-xl">
+<div class="flex justify-between items-end mb-md">
+<div>
+<h2 class="font-label-caps text-label-caps text-secondary mb-xs">DISCOVER</h2>
+<h3 class="font-h2 text-h2">Curated Services</h3>
+</div>
+<a class="font-label-caps text-[10px] text-primary border-b border-primary hover:opacity-80 transition-opacity pb-1" href="#">VIEW CATALOG</a>
+</div>
+<div class="flex gap-md overflow-x-auto pb-gutter hide-scrollbar">
+<!-- Service Card 1 -->
+<div class="min-w-[320px] bg-surface-container-lowest shadow-[0_2px_20px_rgba(0,0,0,0.06)] group">
+<div class="h-48 overflow-hidden">
+<img alt="Luxury Hair Service" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A sophisticated close-up of a stylist working on luxurious, glossy golden-blonde hair in a high-end salon environment. The lighting is diffused and professional, creating an editorial feel. The background features warm beige walls and minimalist decor. The overall mood is one of prestige and expert craftsmanship, perfectly aligned with a luxury beauty brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBD09dPemJCjEJoO6yuWeR_SGJKhT4j_CnXvbXgdUH78NXlaRElXG5hOGypig5KrRbcFICjYgI-h6l7JWA_o9wlB3svrpYtivsQMJKWtOJtQrSgnGzhIZzSIbvvZxjEqN9CjG4D2TnGBUCNGgrsR2moWos1Jte2xIKBbMrFVCnf_NAdWyYYEbO72R8HIAw_2O5zaWSdrW8fl2_7tfJuWce-473jMJenZK64sM7dNT9DtDIWtjY9_P0Pn8zzs6tPXI3scVqzjr3cmU8"/>
+</div>
+<div class="p-md">
+<span class="font-label-caps text-[10px] bg-primary/5 text-primary px-3 py-1 rounded-full border border-primary/20">HAIR ARTISTRY</span>
+<h4 class="font-h3 text-h3 mt-sm mb-xs">Balayage &amp; Glaze</h4>
+<p class="font-body text-body text-secondary mb-md h-12 line-clamp-2">Hand-painted dimension for a naturally sun-kissed, multi-tonal finish.</p>
+<p class="font-body font-bold text-primary">From $350</p>
+</div>
+</div>
+<!-- Service Card 2 -->
+<div class="min-w-[320px] bg-surface-container-lowest shadow-[0_2px_20px_rgba(0,0,0,0.06)] group">
+<div class="h-48 overflow-hidden">
+<img alt="Advanced Skincare" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A detail-oriented view of a luxury skincare treatment involving golden facial serums and minimalist equipment. The scene is bright, high-key, and spotlessly clean, evoking a medical-grade but opulent spa environment. Soft ivory towels and a hint of warm gold metallic accents complete the palette. The atmosphere is clinical yet deeply relaxing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaCZ99V9sEAj_Gu9zhJs_EZgUXKd6QDIPyWoWqJqNxPs4xV0c8QLsJKz07NZlaMyQXTlvJsSBIEewaov2swrA0BvkUdjDjldxLaFfQqwdMYud_eoNhFR0qZIzPz70wtKJ7QoHaVPk-cxFh-1LaffdYzNlWn496-b9aT0t6yFtmAALtsi8lr1bcDUV4C7s2hMLXAJfaQOxjOO67tc42MYMyi4GD0QRlB8pYocat0TYEIOUKUgwUN_au1mroIR83kANflbC6EctNJQM"/>
+</div>
+<div class="p-md">
+<span class="font-label-caps text-[10px] bg-primary/5 text-primary px-3 py-1 rounded-full border border-primary/20">SKIN CLINIC</span>
+<h4 class="font-h3 text-h3 mt-sm mb-xs">Luminous Enzyme Peel</h4>
+<p class="font-body text-body text-secondary mb-md h-12 line-clamp-2">A gentle yet powerful resurfacing treatment for immediate clarity.</p>
+<p class="font-body font-bold text-primary">From $220</p>
+</div>
+</div>
+<!-- Service Card 3 -->
+<div class="min-w-[320px] bg-surface-container-lowest shadow-[0_2px_20px_rgba(0,0,0,0.06)] group">
+<div class="h-48 overflow-hidden">
+<img alt="Nail Art" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Close-up of minimalist, high-end nail artistry featuring a neutral champagne base and a delicate thin gold line accent. The hands are set against a soft, textured white fabric. The lighting is natural and ethereal, emphasizing the clean lines and prestigious feel of the service. The image reflects an ultra-modern, serene beauty aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvasUSpMaxRbiksMMm5VmKM5afchYVWCBrhH3goXP07rzIvmtHaAsh0uJ23dBUp3S23cxEBr9y1RMo-6ijfBIleJ1ZUVTdsDZa-R09fr-vM5efXkTbwRi-xeG2bCaz-4t1GfQ6nkDveHi194e6XpfdwkaAvKljgjf6A7DvOJF2Kw-rT-RKNdCxclC6gEj49zPNs7CJ5-AaY3y32p9JFVToWtot59GwFD03k5JoMzTF5mWqCXKMfZR_zp0V0tddlZZPQHRYkspSmyA"/>
+</div>
+<div class="p-md">
+<span class="font-label-caps text-[10px] bg-primary/5 text-primary px-3 py-1 rounded-full border border-primary/20">NAIL COUTURE</span>
+<h4 class="font-h3 text-h3 mt-sm mb-xs">The Aurum Manicure</h4>
+<p class="font-body text-body text-secondary mb-md h-12 line-clamp-2">Complete hand rejuvenation with a signature bespoke finish.</p>
+<p class="font-body font-bold text-primary">From $95</p>
+</div>
+</div>
+<!-- Service Card 4 -->
+<div class="min-w-[320px] bg-surface-container-lowest shadow-[0_2px_20px_rgba(0,0,0,0.06)] group">
+<div class="h-48 overflow-hidden">
+<img alt="Body Therapy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A tranquil scene of a luxury body massage room. The focus is on a collection of smooth, warm stones and gold-capped oil bottles sitting on a pristine white marble surface. The background is a soft-focus warm ivory wall with a single piece of abstract art. The lighting is subtle and atmospheric, suggesting an elite, quiet wellness retreat." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2mRQCwZFMAg7QNMfBD4O3xBqzHvgNywYE_dEu3LVnpd-Znhz17jXGtyKfPtdN58PA83MdlH_M_C8XXk-zQqGim4KDdn3_TVyf4blvPDoqwSoQzVRc80w4YzP8bdcsKoD6iwVZAAYoT8qzxGuWOCt_7MKNAcHD6e67e2oOF_j_8thQQVCMS5DHR4e_JGLr0gHHasKDPYHVUVGGHuPgLWqTBpthFzJxDUPeYbiXG06DMhr2gZ8lp3C__ZLfeqbEfeGCTBx4b-IBlbA"/>
+</div>
+<div class="p-md">
+<span class="font-label-caps text-[10px] bg-primary/5 text-primary px-3 py-1 rounded-full border border-primary/20">WELLNESS</span>
+<h4 class="font-h3 text-h3 mt-sm mb-xs">Therapeutic Stone Ritual</h4>
+<p class="font-body text-body text-secondary mb-md h-12 line-clamp-2">Release tension with heated basalt stones and aromatic botanicals.</p>
+<p class="font-body font-bold text-primary">From $180</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 mt-auto bg-surface-container border-t border-outline-variant">
+<div class="flex flex-col md:flex-row justify-between items-center px-gutter max-w-container-max mx-auto">
+<div class="mb-lg md:mb-0">
+<span class="font-h3 text-h3 text-secondary">AURUM BEAUTY</span>
+<p class="font-label-caps text-[10px] text-secondary mt-2">© 2024 AURUM BEAUTY MANAGEMENT. ALL RIGHTS RESERVED.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-md">
+<a class="font-label-caps text-[10px] text-secondary hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-caps text-[10px] text-secondary hover:text-on-surface transition-colors" href="#">Terms of Service</a>
+<a class="font-label-caps text-[10px] text-secondary hover:text-on-surface transition-colors" href="#">System Status</a>
+<a class="font-label-caps text-[10px] text-secondary hover:text-on-surface transition-colors" href="#">Help Center</a>
+</div>
+</div>
+</footer>
+<!-- Floating Action Button: Book Now -->
+<button class="fixed bottom-8 right-8 gold-gradient text-white px-md py-4 rounded-full shadow-2xl flex items-center gap-sm group z-50 hover:scale-105 transition-all duration-300">
+<span class="material-symbols-outlined font-variation-settings: 'FILL' 1;">calendar_add_on</span>
+<span class="font-button tracking-widest uppercase">Book Now</span>
+</button>
+</body></html>

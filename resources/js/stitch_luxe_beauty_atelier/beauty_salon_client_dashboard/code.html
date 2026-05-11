@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>L'Éclat Atelier | Client Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&amp;family=EB+Garamond:ital,wght@0,400;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #e8c17f 0%, #c9a465 100%);
+        }
+        .gold-shimmer:hover {
+            position: relative;
+            overflow: hidden;
+        }
+        .gold-shimmer:hover::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.3) 50%, transparent 55%);
+            animation: shimmer 1s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            100% { transform: translateX(100%) translateY(100%); }
+        }
+        .glass-panel {
+            background: rgba(19, 19, 19, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#d1c5b5",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary": "#e8c17f",
+                        "surface-variant": "#353534",
+                        "secondary": "#f7bd48",
+                        "on-secondary": "#412d00",
+                        "surface-dim": "#131313",
+                        "secondary-container": "#ba880f",
+                        "surface-bright": "#393939",
+                        "tertiary": "#cac6be",
+                        "on-tertiary": "#32302b",
+                        "outline": "#9a8f81",
+                        "on-surface": "#e5e2e1",
+                        "surface": "#131313",
+                        "background": "#0D0D0D",
+                        "surface-container": "#201f1f",
+                        "outline-variant": "#4e4639",
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "section-gap": "128px",
+                        "unit": "8px",
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Montserrat"],
+                        "label-accent": ["Montserrat"],
+                        "caption": ["Montserrat"],
+                        "h3": ["EB Garamond"],
+                        "h2": ["EB Garamond"],
+                        "h1": ["EB Garamond"],
+                        "body-md": ["Montserrat"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "300"}],
+                        "label-accent": ["12px", {"lineHeight": "1", "letterSpacing": "0.3em", "fontWeight": "500"}],
+                        "caption": ["14px", {"lineHeight": "1.4", "fontWeight": "300"}],
+                        "h3": ["32px", {"lineHeight": "1.3", "fontWeight": "400"}],
+                        "h2": ["48px", {"lineHeight": "1.2", "fontWeight": "300"}],
+                        "h1": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "300"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "300"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<!-- SideNavBar -->
+<aside class="w-[260px] h-screen fixed left-0 top-0 bg-surface-container dark:bg-surface-container-lowest border-r border-outline-variant/30 shadow-[10px_0_30px_rgba(0,0,0,0.5)] flex flex-col py-margin-mobile gap-unit z-50">
+<div class="px-6 mb-12">
+<h1 class="font-h2 text-h3 text-primary tracking-widest uppercase">L'Éclat</h1>
+<p class="font-label-accent text-label-accent text-on-surface-variant/60">HAUTE BEAUTÉ</p>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-4 px-6 py-3 text-primary bg-surface-variant/20 border-r-2 border-primary" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-accent text-label-accent">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-bright/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-label-accent text-label-accent">Appointments</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-bright/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-accent text-label-accent">Services</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-bright/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-accent text-label-accent">Specialists</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-bright/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-accent text-label-accent">Clients</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-bright/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-accent text-label-accent">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-6 pt-6 border-t border-outline-variant/10 flex flex-col gap-4">
+<button class="gold-gradient text-on-primary font-label-accent py-4 rounded-sm tracking-widest gold-shimmer transition-all">
+                BOOK APPOINTMENT
+            </button>
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-label-accent text-label-accent">Help Center</span>
+</a>
+<a class="flex items-center gap-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-accent text-label-accent">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-margin-desktop h-20 ml-[260px] bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 sticky top-0 z-40">
+<div class="flex items-center gap-4">
+<span class="font-h3 text-h3 text-primary italic">L'Éclat Atelier</span>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="flex items-center gap-6 mr-8">
+<a class="font-body-md text-body-md tracking-tight text-on-surface hover:text-secondary transition-opacity" href="#">Our Story</a>
+<a class="font-body-md text-body-md tracking-tight text-on-surface hover:text-secondary transition-opacity" href="#">Gallery</a>
+<a class="font-body-md text-body-md tracking-tight text-on-surface hover:text-secondary transition-opacity" href="#">Concierge</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/30">
+<span class="font-body-md text-body-md text-on-surface">Julianna</span>
+<img alt="User Profile Profile" class="w-10 h-10 rounded-full border border-primary/30" data-alt="A high-end editorial portrait of a woman with radiant skin and elegant styling, Julianna, set against a soft-focus dark luxury spa background. The lighting is warm and cinematic, highlighting the sophisticated and exclusive atmosphere of a premium Parisian beauty atelier. Professional photography with rich tonal depth and gold accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0qlZ2FezmySLxTA5w8j_WgRHWmtg0rtVlqBUzrV-H_dJu3veCwezK0eN81s8Xnf9Y251tyH0Kci-B1Iv5ZLVy-z-vUmT5dsFxRR3oe8vL1XWelmd4ZOLLwMyDEN0iwCGKXayzInMxv1OHphLlsKoPCtHdnskIKSBy0Bfjt1GgW76ke40_sOG59DjnCFFen8t4GxklMpkzBJGlUYsc_mXkh9ssXSmodxaeuyQW31HOPcRXjXa1G3qiTfBCdSsZYE9_MORU3-IW2uk"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-[260px] p-margin-desktop min-h-screen">
+<!-- Hero Card Section -->
+<section class="mb-section-gap">
+<div class="relative overflow-hidden rounded-lg bg-[#1A1A1A] border border-outline-variant/30 p-12 flex flex-col md:flex-row justify-between items-center gap-8 group hover:shadow-[0_0_30px_rgba(232,193,127,0.1)] transition-all duration-500">
+<div class="absolute left-0 top-0 w-2 h-full gold-gradient"></div>
+<div class="flex-1 space-y-4">
+<span class="font-label-accent text-label-accent text-primary">YOUR NEXT APPOINTMENT</span>
+<h2 class="font-h1 text-primary italic">Haute Couture Hair Styling</h2>
+<div class="flex flex-wrap gap-8 items-center mt-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+<span class="font-body-lg text-body-lg text-on-surface">Marcelo Ruiz</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="calendar_today">calendar_today</span>
+<span class="font-body-lg text-body-lg text-on-surface">Nov 12 at 2:00 PM</span>
+</div>
+<span class="px-4 py-1 rounded-full bg-primary/10 border border-primary/30 text-primary text-[11px] font-label-accent uppercase tracking-widest">
+                            Confirmed
+                        </span>
+</div>
+</div>
+<div class="w-48 h-48 rounded-full border-2 border-primary/20 p-2 group-hover:border-primary/50 transition-colors duration-700">
+<img class="w-full h-full object-cover rounded-full" data-alt="A close-up shot of a master hair stylist working on a client's hair with extreme precision. The aesthetic is dark luxury with warm gold light spills. The focus is on the textures of the hair and the artistic movement of the stylist's hands in a high-end beauty salon environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgFPnw_gv5ssTEVU_5nUVP4xwmc9x2CZ-dftpU1Rl4MRYu0V-JWAIuNutil7z6AAHUzYWnLoV00rqDkvtAv3qgxMc5NnDDHnmkE3PQ1gpc7iLD7lyo6v5Zu2d0WVvkZ3gyu5Wh1du1qmpy7UUDQprKqHbMIc3FJ4ENvbVoZ7MbBVrHaTzhxEWn85L9cezTEtsAouowsCwplpaugZxyDGKRfk_XlDTLdFHRllkJxcKUeM7CwufibOimOCOSd_yZNbBY5IWpbN6VD9c"/>
+</div>
+</div>
+</section>
+<!-- Our Services Section -->
+<section class="mb-section-gap">
+<div class="flex justify-between items-baseline mb-12">
+<h3 class="font-h2 text-h2 text-on-surface">Our Services</h3>
+<a class="font-label-accent text-label-accent text-primary hover:underline underline-offset-8" href="#">VIEW ALL SERVICES ——✦</a>
+</div>
+<div class="flex gap-gutter overflow-x-auto pb-8 scrollbar-hide">
+<!-- Card 1 -->
+<div class="min-w-[320px] bg-surface-container border border-outline-variant/20 rounded-sm p-8 transition-all duration-300 hover:border-primary group">
+<span class="font-label-accent text-label-accent text-primary block mb-4">HAIR</span>
+<h4 class="font-h3 text-on-surface mb-8 group-hover:text-primary transition-colors">French Balayage</h4>
+<div class="flex justify-between items-end">
+<span class="font-caption text-on-surface-variant">120 min</span>
+<span class="font-label-accent text-primary">$250</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[320px] bg-surface-container border border-outline-variant/20 rounded-sm p-8 transition-all duration-300 hover:border-primary group">
+<span class="font-label-accent text-label-accent text-primary block mb-4">SKIN</span>
+<h4 class="font-h3 text-on-surface mb-8 group-hover:text-primary transition-colors">Gold Dust Facial</h4>
+<div class="flex justify-between items-end">
+<span class="font-caption text-on-surface-variant">90 min</span>
+<span class="font-label-accent text-primary">$180</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="min-w-[320px] bg-surface-container border border-outline-variant/20 rounded-sm p-8 transition-all duration-300 hover:border-primary group">
+<span class="font-label-accent text-label-accent text-primary block mb-4">NAILS</span>
+<h4 class="font-h3 text-on-surface mb-8 group-hover:text-primary transition-colors">Silk Overlay</h4>
+<div class="flex justify-between items-end">
+<span class="font-caption text-on-surface-variant">60 min</span>
+<span class="font-label-accent text-primary">$95</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="min-w-[320px] bg-surface-container border border-outline-variant/20 rounded-sm p-8 transition-all duration-300 hover:border-primary group">
+<span class="font-label-accent text-label-accent text-primary block mb-4">BODY</span>
+<h4 class="font-h3 text-on-surface mb-8 group-hover:text-primary transition-colors">Stone Ritual</h4>
+<div class="flex justify-between items-end">
+<span class="font-caption text-on-surface-variant">150 min</span>
+<span class="font-label-accent text-primary">$320</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Appointments Section -->
+<section class="max-w-4xl">
+<h3 class="font-h2 text-h2 text-on-surface mb-12">Recent Appointments</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-6 bg-surface-container-low border border-outline-variant/10 rounded-lg hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-6">
+<div class="w-12 h-12 flex items-center justify-center bg-primary/5 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-primary" data-icon="spa">spa</span>
+</div>
+<div>
+<p class="font-body-lg text-on-surface group-hover:text-primary transition-colors">Silk Press Treatment</p>
+<p class="font-caption text-on-surface-variant">October 14, 2024 • Stylist: Elena V.</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-surface-variant text-on-surface-variant rounded-full text-[10px] font-label-accent uppercase">Completed</span>
+</div>
+<div class="flex items-center justify-between p-6 bg-surface-container-low border border-outline-variant/10 rounded-lg hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-6">
+<div class="w-12 h-12 flex items-center justify-center bg-primary/5 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-primary" data-icon="footprint">footprint</span>
+</div>
+<div>
+<p class="font-body-lg text-on-surface group-hover:text-primary transition-colors">Royal Pedicure</p>
+<p class="font-caption text-on-surface-variant">September 28, 2024 • Specialist: Marcus T.</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-surface-variant text-on-surface-variant rounded-full text-[10px] font-label-accent uppercase">Completed</span>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="mt-section-gap py-section-gap flex flex-col items-center justify-center gap-gutter border-t border-outline-variant/10">
+<div class="font-h3 text-h3 text-primary tracking-[0.1em] uppercase">L'Éclat Atelier</div>
+<div class="flex gap-8">
+<a class="font-caption text-caption uppercase tracking-[0.2em] text-on-surface-variant hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="font-caption text-caption uppercase tracking-[0.2em] text-on-surface-variant hover:text-secondary transition-colors" href="#">Terms of Service</a>
+<a class="font-caption text-caption uppercase tracking-[0.2em] text-on-surface-variant hover:text-secondary transition-colors" href="#">Press Kit</a>
+</div>
+<p class="font-caption text-caption uppercase tracking-[0.2em] text-on-surface-variant/40">© 2024 L'Éclat Atelier Haute Beauté. All rights reserved.</p>
+</footer>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-12 right-12 gold-gradient w-48 h-14 flex items-center justify-center gap-3 rounded-full shadow-[0_10px_30px_rgba(232,193,127,0.3)] hover:scale-105 transition-transform gold-shimmer group z-50">
+<span class="material-symbols-outlined text-on-primary" data-icon="add">add</span>
+<span class="font-label-accent text-on-primary">BOOK NOW</span>
+</button>
+<!-- Decorative Elements -->
+<div class="fixed top-0 right-0 w-[500px] h-[800px] pointer-events-none opacity-10">
+<svg class="w-full h-full fill-primary" viewbox="0 0 100 100">
+<path d="M 0,50 Q 25,25 50,50 T 100,50" fill="none" stroke="currentColor" stroke-width="0.1"></path>
+<path d="M 0,60 Q 25,35 50,60 T 100,60" fill="none" stroke="currentColor" stroke-width="0.1"></path>
+</svg>
+</div>
+</body></html>

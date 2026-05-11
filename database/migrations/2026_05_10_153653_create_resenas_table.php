@@ -1,0 +1,46 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('resenas', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('cita_id')->unique();     // 1 reseña por cita
+            $table->uuid('cliente_id');
+            $table->uuid('empleado_id');
+            $table->tinyInteger('calificacion');   // 1-5
+            $table->text('comentario')->nullable();
+            $table->timestamps();
+
+            $table->foreign('cita_id')
+                ->references('id')->on('citas')
+                ->onDelete('cascade');
+
+            $table->foreign('cliente_id')
+                ->references('id')->on('clientes')
+                ->onDelete('restrict');
+
+            $table->foreign('empleado_id')
+                ->references('id')->on('empleados')
+                ->onDelete('restrict');
+
+            $table->index('empleado_id');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('resenas');
+    }
+};

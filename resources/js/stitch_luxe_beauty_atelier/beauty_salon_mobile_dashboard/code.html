@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&amp;family=EB+Garamond:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-surface-variant": "#d1c5b5",
+            "surface-container-lowest": "#0e0e0e",
+            "primary": "#e8c17f",
+            "surface-variant": "#353534",
+            "secondary": "#f7bd48",
+            "on-secondary": "#412d00",
+            "surface-dim": "#131313",
+            "secondary-container": "#ba880f",
+            "surface-bright": "#393939",
+            "tertiary": "#cac6be",
+            "on-tertiary": "#32302b",
+            "on-primary-fixed": "#271900",
+            "outline": "#9a8f81",
+            "on-surface": "#e5e2e1",
+            "surface": "#131313",
+            "on-secondary-fixed": "#271900",
+            "on-tertiary-fixed-variant": "#494741",
+            "surface-tint": "#e8c17f",
+            "on-secondary-container": "#392700",
+            "on-background": "#e5e2e1",
+            "primary-fixed": "#ffdeaa",
+            "on-primary-fixed-variant": "#5d420b",
+            "on-error": "#690005",
+            "tertiary-fixed-dim": "#cac6be",
+            "surface-container-low": "#1c1b1b",
+            "on-tertiary-fixed": "#1d1c17",
+            "inverse-on-surface": "#313030",
+            "on-primary-container": "#533a03",
+            "tertiary-fixed": "#e7e2da",
+            "inverse-primary": "#775922",
+            "error": "#ffb4ab",
+            "secondary-fixed-dim": "#f7bd48",
+            "inverse-surface": "#e5e2e1",
+            "primary-fixed-dim": "#e8c17f",
+            "primary-container": "#c9a465",
+            "on-tertiary-container": "#403e39",
+            "on-error-container": "#ffdad6",
+            "secondary-fixed": "#ffdea6",
+            "surface-container-high": "#2a2a2a",
+            "background": "#0D0D0D",
+            "surface-container": "#201f1f",
+            "error-container": "#93000a",
+            "on-secondary-fixed-variant": "#5d4200",
+            "on-primary": "#422c00"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-mobile": "20px",
+            "section-gap": "64px",
+            "unit": "8px",
+            "gutter": "24px",
+            "container-max": "1200px",
+            "margin-desktop": "64px"
+          },
+          "fontFamily": {
+            "body-lg": ["Montserrat"],
+            "label-accent": ["Montserrat"],
+            "caption": ["Montserrat"],
+            "h3": ["EB Garamond"],
+            "h2": ["EB Garamond"],
+            "h1": ["EB Garamond"],
+            "body-md": ["Montserrat"]
+          },
+          "fontSize": {
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "300"}],
+            "label-accent": ["12px", {"lineHeight": "1", "letterSpacing": "0.3em", "fontWeight": "500"}],
+            "caption": ["14px", {"lineHeight": "1.4", "fontWeight": "300"}],
+            "h3": ["32px", {"lineHeight": "1.3", "fontWeight": "400"}],
+            "h2": ["48px", {"lineHeight": "1.2", "fontWeight": "300"}],
+            "h1": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "300"}],
+            "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "300"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    }
+    .active-nav-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .gold-shimmer {
+      background: linear-gradient(135deg, #e8c17f 0%, #c9a465 100%);
+    }
+    .gold-border {
+      border: 1px solid rgba(232, 193, 127, 0.3);
+    }
+    .gold-glow {
+      box-shadow: 0 0 15px rgba(232, 193, 127, 0.1);
+    }
+    .blur-glass {
+      backdrop-filter: blur(20px);
+      background: rgba(13, 13, 13, 0.8);
+    }
+    body {
+      background-color: #0D0D0D;
+      color: #e5e2e1;
+    }
+  </style>
+</head>
+<body class="font-body-md selection:bg-primary/30">
+<nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-margin-mobile h-16 blur-glass">
+<div class="w-10"></div>
+<div class="flex items-center justify-center">
+<img alt="L'Éclat Atelier Gold Logo" class="h-10 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC75SiUTAOEGIcuU81xdxkDAETPoncI5lBN2G6M6frLk-8vkC1r7DVRF0PQBw6a4yB-AtlFJV0chu0YOdGYGma_y9feMVu2ewZD6B3TAYfmHQixyBhXKr-P0ob0oS5LQ30kbwCEb8S-wagpXylfsqFb-0IJe6u1KD6mM_qCdchVWwG1ObtAvUJDqvPOfKz9Rk5FphEdeN-gtNfTo2JS0vWfdStSPfJ_E_usbXalXdvcAXMSssslHI2dC2RjJAAwKosOHJyryFrgXXc"/>
+</div>
+<button class="relative p-2 text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full border border-background"></span>
+</button>
+</nav>
+<main class="pt-24 pb-32 px-margin-mobile flex flex-col gap-10">
+<header>
+<p class="font-label-accent text-label-accent text-primary uppercase tracking-widest mb-2">Bienvenue</p>
+<h1 class="font-h1 text-h2 text-primary">Bonjour, Julianna</h1>
+</header>
+<section>
+<div class="font-label-accent text-label-accent text-on-surface-variant mb-4">Prochain Rendez-vous</div>
+<div class="bg-surface-container-low border-l-4 border-primary p-6 rounded-r-xl gold-glow flex flex-col gap-4 relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 opacity-5 text-primary">
+<span class="material-symbols-outlined text-[120px]" data-icon="spa">spa</span>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-h3 text-h3 text-on-surface">Soin Visage Signature</h3>
+<p class="font-body-md text-on-surface-variant flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="person">person</span>
+              Expertise de Marie-Louise
+            </p>
+</div>
+<div class="bg-primary/10 px-3 py-1 rounded-full">
+<span class="font-label-accent text-[10px] text-primary">CONFIRMÉ</span>
+</div>
+</div>
+<div class="flex items-center gap-6 pt-2 border-t border-outline-variant/30">
+<div class="flex flex-col">
+<span class="font-label-accent text-[10px] text-on-surface-variant">DATE</span>
+<span class="font-body-md text-on-surface">14 Nov 2024</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-accent text-[10px] text-on-surface-variant">HEURE</span>
+<span class="font-body-md text-on-surface">14:30</span>
+</div>
+</div>
+</div>
+</section>
+<section>
+<div class="flex justify-between items-end mb-6">
+<h2 class="font-h2 text-h3 text-primary">Nos Services</h2>
+<a class="font-label-accent text-[10px] text-on-surface-variant border-b border-on-surface-variant/30 pb-1" href="#">VOIR TOUT</a>
+</div>
+<div class="flex flex-col gap-6">
+<div class="group relative h-[240px] rounded-xl overflow-hidden gold-border hover:border-primary transition-all duration-500">
+<img alt="Haute Cosmétique" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A macro close-up of a high-end skincare treatment being applied to smooth skin in a dark luxury spa. Soft, warm amber lighting highlights the golden textures of the product. The atmosphere is serene and minimalist, with a deep black background and a focus on tactile glamour." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAffyEy1yk-cJ1zvTi1GLt1byz1ng2QwZFi9qpPMqn_pZN5aCQITY7MFus2jaeiY4R7fcHohwbW5KxSijf70wAhj_RSJRHukJ3ndmF1m4BDeyOwT4oalcKNOdjecWgc7xqZbkpr6_oWRiSxRwUIZir3FlABbo3uJEj12kh2wdnadaAlD-cc5T6hoq74PugiMEBb-XvR3YcU7dEUMRqhgyif9kKHKfhVGpyrwU-PTkJwRWgMajT4jdRg4wIqALp9x1Yz6tWU9Oll57Y"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6">
+<span class="font-label-accent text-label-accent text-primary mb-2 block tracking-widest">VISAGE</span>
+<h3 class="font-h3 text-h3 text-on-surface">L'Éclat Signature</h3>
+</div>
+</div>
+<div class="group relative h-[240px] rounded-xl overflow-hidden gold-border hover:border-primary transition-all duration-500">
+<img alt="Haute Coiffure" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A professional hair stylist working in a minimalist dark-themed salon with gold accents. Elegant hair tools are displayed on a dark surface. The lighting is dramatic and focused, emphasizing the glossy texture of healthy hair against a charcoal and gold-accented interior." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjxxOp2Aid5c6W5DJVxq9EiJH13aLTH5GBxFPw9MNF7107dptJOdQfOx0r17zX-fAW1oh4-Tl3756zUEXVLH3lQs3dV8YAcG8D3rkS3a1vfkoFnB-nCA97bppktUkhNLbTjssvduLA4VXZ4xoWveL1Jn4NWHS9fWjnjhqG0-qJL8jQymfK_s15vuiVvWP2Nqgcl-QwtTFiSmgKVXeMzxgHcXmC-JtzfpPLmOGjq3yM39TKa9x0sR2B-BZQ-xKwvE8gzkcofK03uiA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6">
+<span class="font-label-accent text-label-accent text-primary mb-2 block tracking-widest">COIFFURE</span>
+<h3 class="font-h3 text-h3 text-on-surface">Le Rituel Soyeux</h3>
+</div>
+</div>
+</div>
+</section>
+<section>
+<div class="flex justify-between items-end mb-6">
+<h2 class="font-h2 text-h3 text-primary">Historique Récent</h2>
+</div>
+<div class="flex flex-col divide-y divide-outline-variant/20">
+<div class="py-4 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full border border-primary/20 flex items-center justify-center bg-surface-container">
+<span class="material-symbols-outlined text-primary" data-icon="content_cut">content_cut</span>
+</div>
+<div>
+<p class="font-body-md text-on-surface">Coupe Signature</p>
+<p class="font-caption text-caption text-on-surface-variant">24 Oct 2024 • Sophie</p>
+</div>
+</div>
+<span class="font-body-md text-primary">120€</span>
+</div>
+<div class="py-4 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full border border-primary/20 flex items-center justify-center bg-surface-container">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div>
+<p class="font-body-md text-on-surface">Manucure de Luxe</p>
+<p class="font-caption text-caption text-on-surface-variant">02 Oct 2024 • Clara</p>
+</div>
+</div>
+<span class="font-body-md text-primary">85€</span>
+</div>
+</div>
+</section>
+<footer class="py-section-gap flex flex-col items-center justify-center text-center gap-4 border-t border-outline-variant/10">
+<div class="font-h3 text-h3 text-primary italic">L'Éclat Atelier</div>
+<p class="font-caption text-caption text-on-surface-variant uppercase tracking-[0.2em] px-4 leading-relaxed">
+        © 2024 L'Éclat Atelier Haute Beauté.<br/>Tout droit réservé.
+      </p>
+</footer>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 z-50 blur-glass pb-8 pt-4 px-6">
+<div class="flex justify-between items-center max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined active-nav-icon text-primary text-[28px]" data-icon="home">home</span>
+<span class="font-label-accent text-[10px] text-primary">Accueil</span>
+</a>
+<a class="flex flex-col items-center gap-1 group text-on-surface-variant hover:text-primary transition-colors" href="#">
+<div class="w-12 h-12 gold-shimmer rounded-full flex items-center justify-center -mt-8 shadow-[0_4px_20px_rgba(232,193,127,0.4)]">
+<span class="material-symbols-outlined text-background text-[28px]" data-icon="calendar_month">calendar_month</span>
+</div>
+<span class="font-label-accent text-[10px] mt-1">Réserver</span>
+</a>
+<a class="flex flex-col items-center gap-1 group text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[28px]" data-icon="history">history</span>
+<span class="font-label-accent text-[10px]">Parcours</span>
+</a>
+<a class="flex flex-col items-center gap-1 group text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[28px]" data-icon="person">person</span>
+<span class="font-label-accent text-[10px]">Profil</span>
+</a>
+</div>
+</nav>
+</body></html>

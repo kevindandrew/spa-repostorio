@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    }
+
+    ::-webkit-scrollbar       { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: #1c1b1b; }
+    ::-webkit-scrollbar-thumb { background: #4e4639; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #c9a465; }
+}
+
+@layer components {
+    .gold-gradient {
+        background: linear-gradient(135deg, #e8c17f 0%, #c9a465 50%, #ba880f 100%);
+    }
+
+    .gold-gradient-text {
+        background: linear-gradient(135deg, #e8c17f 0%, #f7bd48 50%, #c9a465 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .bezel-card {
+        border: 1px solid rgba(232, 193, 127, 0.2);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .bezel-card:hover {
+        border-color: rgba(232, 193, 127, 0.6);
+        box-shadow: 0 0 20px rgba(201, 164, 101, 0.12);
+    }
+
+    .shimmer-btn {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .shimmer-btn::after {
+        content: '';
+        position: absolute;
+        top: -50%; left: -60%;
+        width: 40%; height: 200%;
+        background: linear-gradient(
+            to right,
+            rgba(255,255,255,0) 0%,
+            rgba(255,255,255,0.35) 50%,
+            rgba(255,255,255,0) 100%
+        );
+        transform: skewX(-20deg);
+        transition: left 0.6s ease;
+        pointer-events: none;
+    }
+
+    .shimmer-btn:hover::after {
+        left: 120%;
+    }
+
+    .nav-item {
+        @apply flex items-center gap-3 px-4 py-3 rounded-sm text-spa-on-dark-dim
+               font-sans text-[11px] uppercase tracking-[0.2em] font-medium
+               transition-all duration-200 cursor-pointer;
+    }
+
+    .nav-item:hover {
+        @apply text-gold bg-spa-surface-high;
+    }
+
+    .nav-item.active {
+        @apply text-gold bg-spa-surface-high border-r-2 border-gold;
+    }
+
+    /* Dark panel inputs (login left side, dark mode forms) */
+    .input-luxury {
+        @apply w-full bg-transparent border-0 border-b border-spa-outline-dim
+               py-3 text-spa-on-dark
+               font-sans text-sm placeholder:text-spa-on-dark-dim/40
+               focus:outline-none focus:border-gold
+               transition-all duration-300;
+    }
+
+    /* Light panel inputs (login right side, light mode forms) */
+    .input-luxury-light {
+        @apply w-full bg-transparent border-0 border-b border-spa-border
+               py-3 text-spa-on-light
+               font-sans text-sm placeholder:text-spa-on-light-dim/50
+               focus:outline-none focus:border-gold-mid
+               transition-all duration-300;
+    }
+
+    .kpi-card {
+        @apply bezel-card rounded-sm p-6 bg-white dark:bg-spa-surface-high;
+    }
+}
+
+@layer utilities {
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0);    }
+    }
+}

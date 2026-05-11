@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>L'Éclat Atelier | Employee Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&amp;family=EB+Garamond:ital,wght@0,400;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#d1c5b5",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary": "#e8c17f",
+                        "surface-variant": "#353534",
+                        "secondary": "#f7bd48",
+                        "on-secondary": "#412d00",
+                        "surface-dim": "#131313",
+                        "secondary-container": "#ba880f",
+                        "surface-bright": "#393939",
+                        "tertiary": "#cac6be",
+                        "on-tertiary": "#32302b",
+                        "on-primary-fixed": "#271900",
+                        "outline": "#9a8f81",
+                        "on-surface": "#e5e2e1",
+                        "surface": "#131313",
+                        "on-secondary-fixed": "#271900",
+                        "on-tertiary-fixed-variant": "#494741",
+                        "surface-tint": "#e8c17f",
+                        "on-secondary-container": "#392700",
+                        "on-background": "#e5e2e1",
+                        "primary-fixed": "#ffdeaa",
+                        "on-primary-fixed-variant": "#5d420b",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#cac6be",
+                        "surface-container-low": "#1c1b1b",
+                        "on-tertiary-fixed": "#1d1c17",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-container": "#533a03",
+                        "tertiary-fixed": "#e7e2da",
+                        "inverse-primary": "#775922",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#f7bd48",
+                        "inverse-surface": "#e5e2e1",
+                        "primary-fixed-dim": "#e8c17f",
+                        "primary-container": "#c9a465",
+                        "on-tertiary-container": "#403e39",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed": "#ffdea6",
+                        "surface-container-high": "#2a2a2a",
+                        "background": "#131313",
+                        "surface-container-highest": "#353534",
+                        "tertiary-container": "#ada9a2",
+                        "outline-variant": "#4e4639",
+                        "surface-container": "#201f1f",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#5d4200",
+                        "on-primary": "#422c00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "section-gap": "128px",
+                        "unit": "8px",
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Montserrat"],
+                        "label-accent": ["Montserrat"],
+                        "caption": ["Montserrat"],
+                        "h3": ["EB Garamond"],
+                        "h2": ["EB Garamond"],
+                        "h1": ["EB Garamond"],
+                        "body-md": ["Montserrat"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "300"}],
+                        "label-accent": ["12px", {"lineHeight": "1", "letterSpacing": "0.3em", "fontWeight": "500"}],
+                        "caption": ["14px", {"lineHeight": "1.4", "fontWeight": "300"}],
+                        "h3": ["32px", {"lineHeight": "1.3", "fontWeight": "400"}],
+                        "h2": ["48px", {"lineHeight": "1.2", "fontWeight": "300"}],
+                        "h1": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "300"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "300"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav-glow {
+            background: rgba(232, 193, 127, 0.05);
+            box-shadow: inset 0 0 15px rgba(232, 193, 127, 0.1);
+        }
+        .shimmer-btn:hover {
+            background: linear-gradient(110deg, #e8c17f 45%, #fff 50%, #e8c17f 55%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0e0e0e;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4e4639;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-[#0D0D0D] text-on-surface font-body-md selection:bg-primary/30">
+<!-- SideNavBar Component -->
+<aside class="w-[260px] h-screen fixed left-0 top-0 bg-surface-container dark:bg-surface-container-lowest border-r border-outline-variant/30 shadow-[10px_0_30px_rgba(0,0,0,0.5)] flex flex-col py-margin-mobile gap-unit z-50">
+<div class="px-6 mb-8">
+<h1 class="font-h2 text-h3 text-primary tracking-widest uppercase mb-1">L'Éclat Atelier</h1>
+<p class="font-label-accent text-label-accent text-on-surface-variant/60">Haute Beauté</p>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<!-- Active Tab: Dashboard -->
+<a class="flex items-center gap-4 px-4 py-3 rounded text-primary bg-surface-variant/20 border-r-2 border-primary active-nav-glow transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-accent text-label-accent">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-on-surface-variant hover:text-primary hover:bg-surface-bright/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-label-accent text-label-accent">Appointments</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-on-surface-variant hover:text-primary hover:bg-surface-bright/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-accent text-label-accent">Services</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-on-surface-variant hover:text-primary hover:bg-surface-bright/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-accent text-label-accent">Specialists</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-on-surface-variant hover:text-primary hover:bg-surface-bright/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-accent text-label-accent">Clients</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-on-surface-variant hover:text-primary hover:bg-surface-bright/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-accent text-label-accent">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto space-y-2">
+<button class="w-full py-3 mb-6 bg-primary text-on-primary font-label-accent text-label-accent rounded-sm shimmer-btn transition-all duration-500">
+                Book Appointment
+            </button>
+<a class="flex items-center gap-4 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-label-accent text-label-accent">Help Center</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-accent text-label-accent">Logout</span>
+</a>
+</div>
+</aside>
+<!-- TopAppBar Component -->
+<header class="fixed top-0 right-0 left-0 h-20 ml-[260px] bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center gap-8">
+<h2 class="font-h3 text-h3 text-primary italic">Stylist Portal</h2>
+<nav class="hidden lg:flex gap-6">
+<a class="font-body-md text-body-md tracking-tight text-primary border-b border-primary pb-1" href="#">Our Story</a>
+<a class="font-body-md text-body-md tracking-tight text-on-surface hover:text-secondary transition-opacity" href="#">Gallery</a>
+<a class="font-body-md text-body-md tracking-tight text-on-surface hover:text-secondary transition-opacity" href="#">Concierge</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary" data-icon="spa">spa</span>
+</div>
+<div class="flex items-center gap-3 pl-6 border-l border-outline-variant/30">
+<div class="text-right">
+<p class="font-label-accent text-[10px] uppercase text-primary">Master Stylist</p>
+<p class="font-body-md text-sm font-medium">Marc-Antoine</p>
+</div>
+<div class="w-10 h-10 rounded-full border border-primary/30 p-0.5 overflow-hidden">
+<img alt="User Profile Profile" class="w-full h-full object-cover rounded-full" data-alt="Close-up portrait of a sophisticated male master stylist with groomed hair and a sharp dark blazer. He is standing in a luxury salon environment with warm, moody gold-accented lighting. The aesthetic is high-fashion minimalism with a charcoal and gold color palette, conveying professionalism and elite beauty expertise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAE4erP2dv3YeJsjKq0TJ_GKH3xI2FS-Bf0vHNTcSjxLDwhgvi8PaW9pUGqcHn7y1bRpSQ_sCep4kvE9K5cQqRBsAuid9_AjRxlhZ2XACsiJhEgdcRW7gXcRHab4EDmrtkhiIHjrl94ztkrGwwKwMFuDC0cmb9agFMlqjyoPV8hOFCNPG9BNYuVQ6ISJgjdzdCGFNR7OsP3ihF7bXyGvuNpQS7zWCFy_2Pni06QW8LgbkAxDmUEWQ43G6ra3FPIYHsJN3_gGuuwo_s"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] pt-20 min-h-screen px-margin-desktop pb-section-gap">
+<section class="mt-12 mb-16">
+<div class="flex justify-between items-end mb-8">
+<div>
+<span class="font-label-accent text-label-accent text-primary block mb-2 tracking-[0.4em] uppercase">Overview</span>
+<h2 class="font-h1 text-h2">Bonjour, Marc-Antoine</h2>
+</div>
+<div class="flex gap-4">
+<div class="bg-surface-container-high px-6 py-4 border border-outline-variant/30 flex flex-col">
+<span class="font-label-accent text-[10px] text-on-surface-variant">TODAY'S REVENUE</span>
+<span class="font-h3 text-primary">€1,420.00</span>
+</div>
+<div class="bg-surface-container-high px-6 py-4 border border-outline-variant/30 flex flex-col">
+<span class="font-label-accent text-[10px] text-on-surface-variant">APPOINTMENTS</span>
+<span class="font-h3 text-primary">8 Left</span>
+</div>
+</div>
+</div>
+<!-- Availability Toggle Section -->
+<div class="bg-surface-container-low border border-outline-variant/20 p-8 rounded-lg mb-12">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-h3 text-2xl flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="calendar_today">calendar_today</span>
+                        Weekly Availability
+                    </h3>
+<span class="font-caption text-caption text-on-surface-variant">Set your active service days</span>
+</div>
+<div class="flex flex-wrap gap-4">
+<!-- Day Pills -->
+<button class="px-8 py-3 rounded-full border border-primary bg-primary/10 text-primary font-label-accent text-label-accent shadow-[0_0_15px_rgba(232,193,127,0.15)] transition-all">Monday</button>
+<button class="px-8 py-3 rounded-full border border-primary bg-primary/10 text-primary font-label-accent text-label-accent shadow-[0_0_15px_rgba(232,193,127,0.15)] transition-all">Tuesday</button>
+<button class="px-8 py-3 rounded-full border border-primary bg-primary/10 text-primary font-label-accent text-label-accent shadow-[0_0_15px_rgba(232,193,127,0.15)] transition-all">Wednesday</button>
+<button class="px-8 py-3 rounded-full border border-primary bg-primary/10 text-primary font-label-accent text-label-accent shadow-[0_0_15px_rgba(232,193,127,0.15)] transition-all">Thursday</button>
+<button class="px-8 py-3 rounded-full border border-primary bg-primary/10 text-primary font-label-accent text-label-accent shadow-[0_0_15px_rgba(232,193,127,0.15)] transition-all">Friday</button>
+<button class="px-8 py-3 rounded-full border border-outline-variant/30 text-on-surface-variant/50 font-label-accent text-label-accent hover:border-primary/50 hover:text-primary transition-all">Saturday</button>
+<button class="px-8 py-3 rounded-full border border-outline-variant/30 text-on-surface-variant/50 font-label-accent text-label-accent hover:border-primary/50 hover:text-primary transition-all">Sunday</button>
+</div>
+</div>
+<!-- Today's Schedule: Vertical Timeline -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter relative">
+<div class="lg:col-span-1 border-r border-primary/20 relative">
+<!-- Timeline Gold Line -->
+<div class="absolute right-[-1px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary via-primary/50 to-transparent"></div>
+<div class="space-y-[180px] pt-4 pr-4 text-right">
+<div class="font-label-accent text-xs text-primary">09:00</div>
+<div class="font-label-accent text-xs text-on-surface-variant/60">10:00</div>
+<div class="font-label-accent text-xs text-on-surface-variant/60">11:00</div>
+<div class="font-label-accent text-xs text-on-surface-variant/60">12:00</div>
+<div class="font-label-accent text-xs text-on-surface-variant/60">13:00</div>
+</div>
+</div>
+<div class="lg:col-span-11 space-y-6">
+<h3 class="font-h3 text-2xl mb-8 flex items-center gap-3">
+                        Today's Itinerary
+                        <span class="w-12 h-[1px] bg-outline-variant/30"></span>
+</h3>
+<!-- Appointment Card 1 -->
+<div class="group relative bg-surface-container border border-outline-variant/20 p-8 flex items-center gap-8 hover:border-primary transition-all duration-500 hover:shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 grayscale group-hover:grayscale-0 transition-all duration-700">
+<img alt="Client" class="w-full h-full object-cover" data-alt="Detailed close-up portrait of an elegant woman with glowing skin and minimalist makeup, her hair perfectly styled in soft waves. She is set against a dark, textured charcoal wall background with cinematic, soft lighting. The image captures the luxury and exclusivity of high-end beauty services in a Parisian atelier." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHW_cCxaeaJ5abtM7-viHns3jwTlKyZ_Sn4bZ5n2SZjQNZtSR1FZF0rlQ9Iw0-eYyQcCI5CEU1YRe3qYTzf6t_fVC_DRvQMoZXra65IpVRgqZMeNJ2F8V_A9RRIzr3AbbbT4BNsd_0xnSauJUrjA87tEa9Hk9ZiQYkxbf_H6EsSWriFvw7dsSgcUUcgRZY-cRw6FqenL-vqdPnqde_Ue74PdlLK3kgTPm1cY6YeylzaqeEyyrFWchPB0NXPCzZo4n3wMV0J4qCeXs"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-h3 text-2xl text-on-surface leading-none">Elena Vassily</h4>
+<span class="bg-primary/10 text-primary border border-primary/20 px-3 py-1 text-[10px] font-label-accent uppercase tracking-widest">In Progress</span>
+</div>
+<p class="font-label-accent text-xs text-primary uppercase tracking-[0.2em] mb-4">Balayage Solaire &amp; Treatment</p>
+<div class="flex items-center gap-4 text-on-surface-variant font-caption text-sm italic">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span> 09:00 - 11:30 AM</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" data-icon="chair">chair</span> Station 04</span>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<a class="font-label-accent text-primary border-b border-primary/30 pb-0.5 hover:border-primary transition-all text-[10px]" href="#">ADD NOTES</a>
+<button class="p-2 border border-outline-variant/30 hover:border-primary hover:text-primary transition-all rounded">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<!-- Bezel effect border -->
+<div class="absolute inset-0 border border-primary/5 pointer-events-none group-hover:border-primary/20"></div>
+</div>
+<!-- Appointment Card 2 -->
+<div class="group relative bg-surface-container border border-outline-variant/20 p-8 flex items-center gap-8 hover:border-primary transition-all duration-500 hover:shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 grayscale group-hover:grayscale-0 transition-all duration-700">
+<img alt="Client" class="w-full h-full object-cover" data-alt="A portrait of a sophisticated woman with striking features, wearing a minimal silk garment in a dark luxury setting. The lighting is focused, creating dramatic shadows and highlighting the high-quality texture of her skin and hair. The background is a moody, deep charcoal with gold-leaf accents, reflecting an opulent beauty salon environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbyGdb60MWhGnm8Gackr9kmxB4zaxLo0PzrVw8KY5mz6uvhP6O59oMkiyueKx2hd37GLqh_AIdH2nkUMR5qBT1Z0ic4_J3lbFg8BOj7FXmfo9JnskOB7pAPYMkfg-kQT0_bQAY6VG3P89NvZ-5tADqP5Wiz-Gl8J3BKhbqvxV_AnE5Oj4QcABGta5aipHWTm7m4dsF54bZqolec4K749LADVoYw_iPJVLcFaC3t5GbBnrCkTV8O4D8wNXP6iNXZlYnMBnsQDBFguA"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-h3 text-2xl text-on-surface leading-none">Sophie Laurent</h4>
+<span class="bg-surface-variant/20 text-on-surface-variant border border-outline-variant/30 px-3 py-1 text-[10px] font-label-accent uppercase tracking-widest">Upcoming</span>
+</div>
+<p class="font-label-accent text-xs text-primary uppercase tracking-[0.2em] mb-4">Precision Haute Couture Cut</p>
+<div class="flex items-center gap-4 text-on-surface-variant font-caption text-sm italic">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span> 12:00 - 01:15 PM</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" data-icon="chair">chair</span> Station 02</span>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<a class="font-label-accent text-primary border-b border-primary/30 pb-0.5 hover:border-primary transition-all text-[10px]" href="#">ADD NOTES</a>
+<button class="p-2 border border-outline-variant/30 hover:border-primary hover:text-primary transition-all rounded">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Separator -->
+<div class="py-8 flex items-center justify-center text-primary/30">
+<span class="h-[1px] flex-1 bg-outline-variant/10"></span>
+<span class="px-4 font-h3">——✦——</span>
+<span class="h-[1px] flex-1 bg-outline-variant/10"></span>
+</div>
+<!-- Appointment Card 3 -->
+<div class="group relative bg-surface-container border border-outline-variant/20 p-8 flex items-center gap-8 hover:border-primary transition-all duration-500 hover:shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 grayscale group-hover:grayscale-0 transition-all duration-700">
+<img alt="Client" class="w-full h-full object-cover" data-alt="An ethereal portrait of a fashion model with voluminous hair and gold metallic eyeshadow, standing in a dark boutique setting. The composition is asymmetrical, with soft-focus floral elements in the foreground. The lighting is high-key and glamorous, creating a luxury spa aesthetic with deep black and champagne gold tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaavPzYDjB7hE_mv3cD4RjqXplzmOMWRcCYEBpMwYaiqlOsNdbmNdGJhJC27UvYshKZHJkWJSz9EJYdR7bWVldmoLhg3DXwJ0z8jDkanoqdza7XShUunO9b3tWEUa8DhOuvL2pfu42P6OHH7akQa_39XfVShrWSZAV5m13DVK8CfhaMGiAsTqc22ibmd79eyxEgNTiqMGGEeNr1uq6AOxKuKehSAFQxRaYw14iGBqPsQXb2szUB5OueiGZfk7ZnkZiXNS6M_Q8jTs"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-h3 text-2xl text-on-surface leading-none">Isabelle Dubois</h4>
+<span class="bg-surface-variant/20 text-on-surface-variant border border-outline-variant/30 px-3 py-1 text-[10px] font-label-accent uppercase tracking-widest">Upcoming</span>
+</div>
+<p class="font-label-accent text-xs text-primary uppercase tracking-[0.2em] mb-4">Deep Scalp Treatment &amp; Style</p>
+<div class="flex items-center gap-4 text-on-surface-variant font-caption text-sm italic">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span> 02:30 - 04:00 PM</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" data-icon="chair">chair</span> Station 04</span>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<a class="font-label-accent text-primary border-b border-primary/30 pb-0.5 hover:border-primary transition-all text-[10px]" href="#">ADD NOTES</a>
+<button class="p-2 border border-outline-variant/30 hover:border-primary hover:text-primary transition-all rounded">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Component -->
+<footer class="ml-[260px] bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/10 py-section-gap flex flex-col items-center justify-center gap-gutter text-center">
+<h3 class="font-h3 text-h3 text-primary">L'Éclat Atelier</h3>
+<div class="flex gap-8">
+<a class="font-caption text-caption uppercase tracking-[0.2em] text-on-surface-variant hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="font-caption text-caption uppercase tracking-[0.2em] text-on-surface-variant hover:text-secondary transition-colors" href="#">Terms of Service</a>
+<a class="font-caption text-caption uppercase tracking-[0.2em] text-on-surface-variant hover:text-secondary transition-colors" href="#">Press Kit</a>
+</div>
+<p class="font-caption text-caption uppercase tracking-[0.2em] text-on-surface-variant/40 mt-4">
+            © 2024 L'Éclat Atelier Haute Beauté. All rights reserved.
+        </p>
+</footer>
+</body></html>
