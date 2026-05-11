@@ -35,17 +35,11 @@ export default function ClienteLayout({ children, title = '' }) {
 
                     {/* Logo */}
                     <Link href={route('cliente.dashboard')}
-                          className="flex items-center gap-3">
-                        {/* Mini gem SVG */}
-                        <svg className="w-8 h-8" viewBox="0 0 40 40" fill="none">
-                            <polygon points="20,3 37,15 20,37 3,15"
-                                     stroke="#c9a465" strokeWidth="1.5" fill="rgba(201,164,101,0.08)"/>
-                            <polygon points="20,3 37,15 20,15 3,15"
-                                     stroke="#c9a465" strokeWidth="1" fill="rgba(201,164,101,0.05)"/>
-                        </svg>
-                        <span className="font-serif text-gold-mid dark:text-gold text-lg tracking-wide">
-                            Beauty Salon
-                        </span>
+                          className="flex flex-col items-start gap-0.5">
+                        <img src="/images/MARCELO%20BLANCO.png" alt="Marcelo Ruiz"
+                             className="h-[18px] brightness-0 dark:brightness-100 transition-none" />
+                        <img src="/images/NINFA%20BLANCO.png" alt="Ninfa Rodriguez"
+                             className="h-[18px] brightness-0 dark:brightness-100 transition-none" />
                     </Link>
 
                     {/* Nav desktop */}

@@ -60,7 +60,7 @@ export default function Citas({ citas, filtroEstado }) {
 
     return (
         <ClienteLayout title="Mis Citas">
-            <Head title="Mis Citas — Beauty Salon" />
+            <Head title="Mis Citas — Spa Marcelo Ruiz & Ninfa Rodriguez" />
 
             {/* Flash */}
             {flash.success && (

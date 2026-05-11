@@ -34,10 +34,11 @@ export default function AdminLayout({ children, title = '' }) {
 
                 {/* Brand */}
                 <div className="px-6 pt-8 pb-6 border-b border-gold/10">
-                    <p className="font-serif text-gold text-xl font-normal tracking-wider leading-tight">
-                        Beauty Salon
-                    </p>
-                    <p className="font-sans text-[9px] text-gold/50 tracking-[0.35em] uppercase mt-1">
+                    <img src="/images/MARCELO%20BLANCO.png" alt="Marcelo Ruiz"
+                         className="h-7 mb-2 drop-shadow-[0_1px_4px_rgba(232,193,127,0.25)]" />
+                    <img src="/images/NINFA%20BLANCO.png" alt="Ninfa Rodriguez"
+                         className="h-7 mb-3 drop-shadow-[0_1px_4px_rgba(232,193,127,0.25)]" />
+                    <p className="font-sans text-[9px] text-gold/50 tracking-[0.35em] uppercase">
                         Management Portal
                     </p>
                 </div>

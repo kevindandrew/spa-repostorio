@@ -25,7 +25,7 @@ export default function Dashboard({ proximaCita, citasRecientes, servicios }) {
 
     return (
         <ClienteLayout>
-            <Head title="Mi Espacio — Beauty Salon" />
+            <Head title="Mi Espacio — Spa Marcelo Ruiz & Ninfa Rodriguez" />
 
             {/* Bienvenida */}
             <div className="mb-8">

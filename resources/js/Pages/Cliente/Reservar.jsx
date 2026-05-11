@@ -103,7 +103,7 @@ export default function Reservar({ servicios, empleados, slots, diasDisponibles,
 
     return (
         <ClienteLayout title="Reservar Cita">
-            <Head title="Reservar — Beauty Salon" />
+            <Head title="Reservar — Spa Marcelo Ruiz & Ninfa Rodriguez" />
 
             {/* Progress bar */}
             <div className="flex items-center mb-8 gap-0">

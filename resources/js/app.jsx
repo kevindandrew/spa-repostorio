@@ -6,7 +6,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from '@/Contexts/ThemeContext';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Beauty Salon';
+const appName = import.meta.env.VITE_APP_NAME || 'Spa Marcelo Ruiz & Ninfa Rodriguez';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
