@@ -1,7 +1,8 @@
-import { Head, router } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Link } from '@inertiajs/react';
 import { useState } from 'react';
+import InputError from '@/Components/InputError';
 
 function Icon({ name, className = '' }) {
     return (
@@ -12,8 +13,146 @@ function Icon({ name, className = '' }) {
     );
 }
 
+function ModalRegistrarCliente({ onClose }) {
+    const { data, setData, post, processing, errors, reset } = useForm({
+        nombre: '',
+        correo: '',
+        telefono: '',
+        fecha_nacimiento: '',
+    });
+
+    function submit(e) {
+        e.preventDefault();
+        post(route('admin.clientes.store'), {
+            onSuccess: () => { reset(); onClose(); },
+        });
+    }
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+             style={{ background: 'rgba(0,0,0,0.7)' }}>
+            <div className="bg-spa-ivory dark:bg-spa-surface border border-gold/20 w-full max-w-md shadow-2xl">
+                {/* Header modal */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gold/10">
+                    <div>
+                        <h3 className="font-serif text-xl text-gold-mid dark:text-gold italic">Registrar cliente</h3>
+                        <p className="font-sans text-[10px] text-spa-on-light-dim dark:text-spa-on-dark-dim mt-0.5">
+                            La contraseña inicial será el número de teléfono
+                        </p>
+                    </div>
+                    <button onClick={onClose}
+                            className="text-spa-on-light-dim dark:text-gold/40 hover:text-gold transition-colors">
+                        <Icon name="close" />
+                    </button>
+                </div>
+
+                <form onSubmit={submit} className="px-6 py-5 space-y-5">
+                    {/* Nombre */}
+                    <div>
+                        <label className="font-sans text-[10px] uppercase tracking-[0.25em] text-spa-on-light-dim dark:text-spa-on-dark-dim block mb-1">
+                            Nombre completo
+                        </label>
+                        <div className="flex items-center gap-3">
+                            <Icon name="person" className="text-gold/40 text-[18px]" />
+                            <input
+                                type="text"
+                                value={data.nombre}
+                                onChange={e => setData('nombre', e.target.value)}
+                                placeholder="Nombre del cliente"
+                                className="flex-1 bg-white dark:bg-spa-bg border border-spa-border dark:border-gold/20
+                                           px-3 py-2.5 font-sans text-sm text-spa-on-light dark:text-spa-on-dark
+                                           placeholder:text-spa-on-light-dim/40 dark:placeholder:text-spa-on-dark-dim/40
+                                           focus:border-gold/50 focus:outline-none transition-colors rounded-sm"
+                            />
+                        </div>
+                        <InputError message={errors.nombre} className="mt-1 text-xs" />
+                    </div>
+
+                    {/* Correo */}
+                    <div>
+                        <label className="font-sans text-[10px] uppercase tracking-[0.25em] text-spa-on-light-dim dark:text-spa-on-dark-dim block mb-1">
+                            Correo electrónico
+                        </label>
+                        <div className="flex items-center gap-3">
+                            <Icon name="mail" className="text-gold/40 text-[18px]" />
+                            <input
+                                type="email"
+                                value={data.correo}
+                                onChange={e => setData('correo', e.target.value)}
+                                placeholder="correo@ejemplo.com"
+                                className="flex-1 bg-white dark:bg-spa-bg border border-spa-border dark:border-gold/20
+                                           px-3 py-2.5 font-sans text-sm text-spa-on-light dark:text-spa-on-dark
+                                           placeholder:text-spa-on-light-dim/40 dark:placeholder:text-spa-on-dark-dim/40
+                                           focus:border-gold/50 focus:outline-none transition-colors rounded-sm"
+                            />
+                        </div>
+                        <InputError message={errors.correo} className="mt-1 text-xs" />
+                    </div>
+
+                    {/* Teléfono */}
+                    <div>
+                        <label className="font-sans text-[10px] uppercase tracking-[0.25em] text-spa-on-light-dim dark:text-spa-on-dark-dim block mb-1">
+                            Teléfono <span className="normal-case tracking-normal opacity-50">(será la contraseña inicial)</span>
+                        </label>
+                        <div className="flex items-center gap-3">
+                            <Icon name="phone" className="text-gold/40 text-[18px]" />
+                            <input
+                                type="tel"
+                                value={data.telefono}
+                                onChange={e => setData('telefono', e.target.value)}
+                                placeholder="+1 234 567 8900"
+                                className="flex-1 bg-white dark:bg-spa-bg border border-spa-border dark:border-gold/20
+                                           px-3 py-2.5 font-sans text-sm text-spa-on-light dark:text-spa-on-dark
+                                           placeholder:text-spa-on-light-dim/40 dark:placeholder:text-spa-on-dark-dim/40
+                                           focus:border-gold/50 focus:outline-none transition-colors rounded-sm"
+                            />
+                        </div>
+                        <InputError message={errors.telefono} className="mt-1 text-xs" />
+                    </div>
+
+                    {/* Fecha nacimiento */}
+                    <div>
+                        <label className="font-sans text-[10px] uppercase tracking-[0.25em] text-spa-on-light-dim dark:text-spa-on-dark-dim block mb-1">
+                            Fecha de nacimiento <span className="normal-case tracking-normal opacity-50">(opcional)</span>
+                        </label>
+                        <div className="flex items-center gap-3">
+                            <Icon name="cake" className="text-gold/40 text-[18px]" />
+                            <input
+                                type="date"
+                                value={data.fecha_nacimiento}
+                                onChange={e => setData('fecha_nacimiento', e.target.value)}
+                                className="flex-1 bg-white dark:bg-spa-bg border border-spa-border dark:border-gold/20
+                                           px-3 py-2.5 font-sans text-sm text-spa-on-light dark:text-spa-on-dark
+                                           focus:border-gold/50 focus:outline-none transition-colors rounded-sm"
+                            />
+                        </div>
+                        <InputError message={errors.fecha_nacimiento} className="mt-1 text-xs" />
+                    </div>
+
+                    {/* Acciones */}
+                    <div className="flex gap-3 pt-2">
+                        <button type="button" onClick={onClose}
+                                className="flex-1 py-3 border border-gold/20 font-sans text-[10px] uppercase tracking-widest
+                                           text-spa-on-light-dim dark:text-gold/60 hover:border-gold/40 hover:text-gold
+                                           transition-all rounded-sm">
+                            Cancelar
+                        </button>
+                        <button type="submit" disabled={processing}
+                                className="flex-1 gold-gradient py-3 font-sans text-[10px] uppercase tracking-widest
+                                           font-semibold text-gold-text hover:brightness-110 transition-all
+                                           disabled:opacity-60 rounded-sm">
+                            {processing ? 'Registrando...' : 'Registrar →'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
 export default function Clientes({ clientes, filters }) {
     const [search, setSearch] = useState(filters.search ?? '');
+    const [showModal, setShowModal] = useState(false);
 
     function handleSearch(e) {
         e.preventDefault();
@@ -29,6 +168,8 @@ export default function Clientes({ clientes, filters }) {
         <AdminLayout title="Clientes">
             <Head title="Clientes — Admin" />
 
+            {showModal && <ModalRegistrarCliente onClose={() => setShowModal(false)} />}
+
             {/* Header */}
             <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div>
@@ -37,6 +178,13 @@ export default function Clientes({ clientes, filters }) {
                         {clientes.length} registrados
                     </p>
                 </div>
+                <button onClick={() => setShowModal(true)}
+                        className="flex items-center gap-2 gold-gradient px-4 py-2.5 font-sans text-[10px]
+                                   uppercase tracking-widest font-semibold text-gold-text rounded-sm
+                                   hover:brightness-110 transition-all">
+                    <Icon name="person_add" className="text-[16px]" />
+                    Registrar cliente
+                </button>
             </div>
 
             {/* KPI rápidos */}

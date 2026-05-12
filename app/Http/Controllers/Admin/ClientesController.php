@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Cita;
 use App\Models\Cliente;
+use App\Models\Usuario;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -43,6 +46,33 @@ class ClientesController extends Controller
             'clientes' => $clientes,
             'filters'  => $request->only(['search']),
         ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'nombre'           => 'required|string|max:255',
+            'correo'           => 'required|string|lowercase|email|max:255|unique:usuarios,correo',
+            'telefono'         => 'required|string|max:20',
+            'fecha_nacimiento' => 'nullable|date',
+        ]);
+
+        $usuario = Usuario::create([
+            'nombre'   => $request->nombre,
+            'correo'   => $request->correo,
+            'password' => Hash::make($request->telefono),
+            'rol'      => 'CLIENTE',
+            'activo'   => true,
+        ]);
+
+        Cliente::create([
+            'usuario_id'       => $usuario->id,
+            'telefono'         => $request->telefono,
+            'fecha_nacimiento' => $request->fecha_nacimiento,
+        ]);
+
+        return redirect()->route('admin.clientes.index')
+            ->with('success', "Cliente \"{$request->nombre}\" registrado. Contraseña inicial: {$request->telefono}");
     }
 
     public function show(Cliente $cliente): Response

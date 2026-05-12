@@ -60,6 +60,7 @@ Route::middleware(['auth', 'role:ADMIN'])
 
         // Clientes
         Route::get('/clientes',             [AdminClientes::class, 'index'])->name('clientes.index');
+        Route::post('/clientes',            [AdminClientes::class, 'store'])->name('clientes.store');
         Route::get('/clientes/{cliente}',   [AdminClientes::class, 'show'])->name('clientes.show');
     });
 

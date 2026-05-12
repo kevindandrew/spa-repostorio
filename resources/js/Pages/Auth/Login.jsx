@@ -267,10 +267,14 @@ export default function Login({ status, canResetPassword }) {
                                     className="font-sans text-[9px] text-spa-on-light-dim/50 dark:text-gold/30
                                                  uppercase tracking-[0.3em]"
                                 >
-                                    Spa Marcelo Ruiz &amp; Ninfa Rodriguez
+                                    ¿No tienes cuenta?
                                 </span>
                                 <span className="h-px flex-1 bg-spa-border dark:bg-gold/10" />
                             </div>
+                            <a href={route("register")}
+                               className="font-sans text-[10px] uppercase tracking-widest text-gold-mid hover:text-gold transition-colors">
+                                Crear cuenta →
+                            </a>
                         </div>
                     </div>
                 </div>
