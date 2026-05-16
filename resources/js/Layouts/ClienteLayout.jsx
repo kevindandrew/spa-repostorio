@@ -3,10 +3,11 @@ import { useTheme } from '@/Contexts/ThemeContext';
 import FlashToast from '@/Components/FlashToast';
 
 const NAV_TOP = [
-    { label: 'Inicio',    icon: 'home',       route: 'cliente.dashboard'    },
-    { label: 'Reservar',  icon: 'add_circle', route: 'cliente.reservar.index' },
-    { label: 'Mis Citas', icon: 'event',      route: 'cliente.citas.index'  },
-    { label: 'Perfil',    icon: 'person',     route: 'profile.edit'         },
+    { label: 'Inicio',    icon: 'home',          route: 'cliente.dashboard'      },
+    { label: 'Reservar',  icon: 'add_circle',    route: 'cliente.reservar.index' },
+    { label: 'Mis Citas', icon: 'event',         route: 'cliente.citas.index'    },
+    { label: 'Paquetes',  icon: 'local_offer',   route: 'cliente.paquetes.index' },
+    { label: 'Perfil',    icon: 'person',        route: 'profile.edit'           },
 ];
 
 function Icon({ name, className = '' }) {

@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\CitasController as AdminCitas;
 use App\Http\Controllers\Admin\ServiciosController as AdminServicios;
 use App\Http\Controllers\Admin\EspecialistasController as AdminEspecialistas;
 use App\Http\Controllers\Admin\ClientesController as AdminClientes;
+use App\Http\Controllers\Admin\PaquetesController as AdminPaquetes;
+use App\Http\Controllers\Cliente\PaquetesController as ClientePaquetes;
 use App\Http\Controllers\Empleado\DashboardController as EmpleadoDashboard;
 use App\Http\Controllers\Empleado\CitasController as EmpleadoCitas;
 use App\Http\Controllers\Empleado\DisponibilidadController as EmpleadoDisponibilidad;
@@ -59,6 +61,12 @@ Route::middleware(['auth', 'role:ADMIN'])
         Route::delete('/especialistas/{empleado}',            [AdminEspecialistas::class, 'destroy'])->name('especialistas.destroy');
         Route::post('/especialistas/{usuario}/desbloquear',   [AdminEspecialistas::class, 'desbloquear'])->name('especialistas.desbloquear');
 
+        // Paquetes / Promociones
+        Route::get('/paquetes',              [AdminPaquetes::class, 'index'])->name('paquetes.index');
+        Route::post('/paquetes',             [AdminPaquetes::class, 'store'])->name('paquetes.store');
+        Route::patch('/paquetes/{paquete}',  [AdminPaquetes::class, 'update'])->name('paquetes.update');
+        Route::delete('/paquetes/{paquete}', [AdminPaquetes::class, 'destroy'])->name('paquetes.destroy');
+
         // Clientes
         Route::get('/clientes',                         [AdminClientes::class, 'index'])->name('clientes.index');
         Route::post('/clientes',                        [AdminClientes::class, 'store'])->name('clientes.store');
@@ -101,6 +109,9 @@ Route::middleware(['auth', 'role:CLIENTE'])
 
         // Reseñas
         Route::post('/resenas',  [ClienteResenas::class, 'store'])->name('resenas.store');
+
+        // Paquetes / Promociones
+        Route::get('/paquetes',  [ClientePaquetes::class, 'index'])->name('paquetes.index');
     });
 
 // Alias legacy /dashboard → redirige según rol
