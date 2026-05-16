@@ -1,6 +1,7 @@
 import { Head, useForm } from "@inertiajs/react";
 import { useTheme } from "@/Contexts/ThemeContext";
 import InputError from "@/Components/InputError";
+import { useState } from "react";
 
 function Icon({ name }) {
     return (
@@ -54,6 +55,7 @@ export default function Login({ status, canResetPassword }) {
         password: "",
         remember: false,
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     const submit = (e) => {
         e.preventDefault();
@@ -203,14 +205,14 @@ export default function Login({ status, canResetPassword }) {
                                             className="font-sans text-[10px] text-gold-mid hover:text-gold
                                                       uppercase tracking-widest transition-colors"
                                         >
-                                            ¿Olvidaste?
+                                            ¿Olvidaste tu contraseña?
                                         </a>
                                     )}
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <Icon name="lock" />
                                     <input
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         name="password"
                                         autoComplete="current-password"
                                         value={data.password}
@@ -220,6 +222,13 @@ export default function Login({ status, canResetPassword }) {
                                         placeholder="••••••••"
                                         className="input-luxury-light dark:input-luxury flex-1"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="text-spa-on-light-dim dark:text-spa-on-dark-dim hover:text-gold transition-colors"
+                                    >
+                                        <Icon name={showPassword ? "visibility_off" : "visibility"} />
+                                    </button>
                                 </div>
                                 <InputError
                                     message={errors.password}

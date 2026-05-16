@@ -1,12 +1,14 @@
 import { Head, useForm } from "@inertiajs/react";
 import { useTheme } from "@/Contexts/ThemeContext";
 import InputError from "@/Components/InputError";
-import { Link } from "@inertiajs/react";
+import { useState } from "react";
 
 function Icon({ name }) {
     return (
-        <span className="material-symbols-outlined text-[18px]"
-            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24" }}>
+        <span
+            className="material-symbols-outlined text-[18px]"
+            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24" }}
+        >
             {name}
         </span>
     );
@@ -25,18 +27,26 @@ function GoldWave({ className }) {
     );
 }
 
-export default function ForgotPassword({ status }) {
+export default function CambiarPassword() {
     const { dark, toggle } = useTheme();
-    const { data, setData, post, processing, errors } = useForm({ correo: "" });
+    const [showNew, setShowNew] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const { data, setData, post, processing, errors, reset } = useForm({
+        password: "",
+        password_confirmation: "",
+    });
 
     const submit = (e) => {
         e.preventDefault();
-        post(route("password.email"));
+        post(route("password.change.update"), {
+            onFinish: () => reset("password", "password_confirmation"),
+        });
     };
 
     return (
         <>
-            <Head title="Restablecer contraseña" />
+            <Head title="Cambiar contraseña" />
 
             <div className="flex h-screen overflow-hidden">
                 {/* Panel izquierdo */}
@@ -45,19 +55,24 @@ export default function ForgotPassword({ status }) {
                     <GoldWave className="absolute -bottom-32 -right-32 w-[400px] h-[400px] opacity-40 rotate-45" />
                     <div className="absolute inset-0 pointer-events-none"
                         style={{ background: "linear-gradient(135deg, rgba(232,193,127,0.03) 0%, transparent 60%)" }} />
+
                     <div className="relative z-10 text-center px-12">
                         <img src="/images/MARCELO%20BLANCO.png" alt="Marcelo Ruiz"
                             className="h-12 mx-auto mb-6 drop-shadow-[0_2px_10px_rgba(232,193,127,0.35)]" />
                         <div className="flex items-center justify-center gap-3 mb-6">
-                            <span className="h-px w-10 bg-gold/30" /><span className="text-gold text-xs">✦</span><span className="h-px w-10 bg-gold/30" />
+                            <span className="h-px w-10 bg-gold/30" />
+                            <span className="text-gold text-xs">✦</span>
+                            <span className="h-px w-10 bg-gold/30" />
                         </div>
                         <img src="/images/NINFA%20BLANCO.png" alt="Ninfa Rodriguez"
                             className="h-12 mx-auto mb-6 drop-shadow-[0_2px_10px_rgba(232,193,127,0.35)]" />
                         <div className="flex items-center justify-center gap-3 mb-6">
-                            <span className="h-px w-10 bg-gold/30" /><span className="text-gold text-xs">✦</span><span className="h-px w-10 bg-gold/30" />
+                            <span className="h-px w-10 bg-gold/30" />
+                            <span className="text-gold text-xs">✦</span>
+                            <span className="h-px w-10 bg-gold/30" />
                         </div>
                         <p className="font-serif italic text-spa-on-dark-dim/60 text-base leading-relaxed max-w-xs mx-auto">
-                            "Te ayudamos a recuperar tu acceso."
+                            "Tu seguridad es nuestra prioridad."
                         </p>
                     </div>
                 </div>
@@ -68,77 +83,92 @@ export default function ForgotPassword({ status }) {
                     <button onClick={toggle}
                         className="absolute top-6 right-6 flex items-center gap-1.5 px-3 py-1.5
                                    rounded-full border border-spa-border dark:border-gold/20
-                                   text-spa-on-light-dim dark:text-gold/60 hover:border-gold/50 transition-all
+                                   text-spa-on-light-dim dark:text-gold/60
+                                   hover:border-gold/50 transition-all
                                    font-sans text-[10px] uppercase tracking-widest">
                         <Icon name={dark ? "light_mode" : "dark_mode"} />
                         {dark ? "Light" : "Dark"}
                     </button>
 
                     <div className="w-full max-w-md">
+                        {/* Header */}
                         <div className="mb-10">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center">
+                                    <Icon name="lock_reset" />
+                                </div>
+                                <div className="h-px flex-1 bg-gold/20" />
+                            </div>
                             <h2 className="font-serif text-4xl font-normal italic text-gold-mid dark:text-gold mb-2">
-                                Recuperar acceso
+                                Nueva contraseña
                             </h2>
                             <div className="flex items-center gap-2 mb-3">
                                 <span className="h-px w-8 bg-gold/30" />
                                 <span className="text-gold/50 text-xs">✦</span>
                             </div>
                             <p className="font-sans text-sm text-spa-on-light-dim dark:text-spa-on-dark-dim">
-                                Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
+                                Por seguridad debes establecer una contraseña personal antes de continuar.
                             </p>
                         </div>
 
-                        {status && (
-                            <div className="mb-6 flex items-center gap-2 bg-green-50 dark:bg-green-900/20
-                                            border border-green-200 dark:border-green-500/30 px-4 py-3">
-                                <Icon name="check_circle" />
-                                <p className="font-sans text-sm text-green-700 dark:text-green-400">{status}</p>
-                            </div>
-                        )}
-
                         <form onSubmit={submit} className="space-y-8">
-                            <div>
+                            {/* Nueva contraseña */}
+                            <div className="relative">
                                 <label className="font-sans text-[10px] text-spa-on-light-dim dark:text-spa-on-dark-dim
                                                   uppercase tracking-[0.25em] block mb-1">
-                                    Correo electrónico
+                                    Nueva contraseña
                                 </label>
                                 <div className="flex items-center gap-3">
-                                    <Icon name="mail" />
+                                    <Icon name="lock" />
                                     <input
-                                        type="email"
-                                        name="correo"
-                                        autoFocus
-                                        value={data.correo}
-                                        onChange={e => setData("correo", e.target.value)}
-                                        placeholder="correo@ejemplo.com"
+                                        type={showNew ? "text" : "password"}
+                                        value={data.password}
+                                        onChange={(e) => setData("password", e.target.value)}
+                                        placeholder="••••••••"
                                         className="input-luxury-light dark:input-luxury flex-1"
+                                        autoFocus
                                     />
+                                    <button type="button" onClick={() => setShowNew(!showNew)}
+                                        className="text-spa-on-light-dim dark:text-spa-on-dark-dim hover:text-gold transition-colors">
+                                        <Icon name={showNew ? "visibility_off" : "visibility"} />
+                                    </button>
                                 </div>
-                                <InputError message={errors.correo} className="mt-1 text-xs" />
+                                <InputError message={errors.password} className="mt-1 text-xs" />
                             </div>
 
-                            <button type="submit" disabled={processing}
+                            {/* Confirmar contraseña */}
+                            <div className="relative">
+                                <label className="font-sans text-[10px] text-spa-on-light-dim dark:text-spa-on-dark-dim
+                                                  uppercase tracking-[0.25em] block mb-1">
+                                    Confirmar contraseña
+                                </label>
+                                <div className="flex items-center gap-3">
+                                    <Icon name="lock_check" />
+                                    <input
+                                        type={showConfirm ? "text" : "password"}
+                                        value={data.password_confirmation}
+                                        onChange={(e) => setData("password_confirmation", e.target.value)}
+                                        placeholder="••••••••"
+                                        className="input-luxury-light dark:input-luxury flex-1"
+                                    />
+                                    <button type="button" onClick={() => setShowConfirm(!showConfirm)}
+                                        className="text-spa-on-light-dim dark:text-spa-on-dark-dim hover:text-gold transition-colors">
+                                        <Icon name={showConfirm ? "visibility_off" : "visibility"} />
+                                    </button>
+                                </div>
+                                <InputError message={errors.password_confirmation} className="mt-1 text-xs" />
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={processing}
                                 className="w-full gold-gradient shimmer-btn py-4 rounded-none
                                            font-sans text-[11px] uppercase tracking-[0.25em] font-semibold
                                            text-gold-text hover:brightness-110 active:scale-[0.99]
                                            transition-all duration-300 disabled:opacity-60">
-                                {processing ? "Enviando..." : "Enviar enlace →"}
+                                {processing ? "Guardando..." : "Establecer contraseña →"}
                             </button>
                         </form>
-
-                        <div className="mt-10 text-center">
-                            <div className="flex items-center gap-3 justify-center mb-4">
-                                <span className="h-px flex-1 bg-spa-border dark:bg-gold/10" />
-                                <span className="font-sans text-[9px] text-spa-on-light-dim/50 dark:text-gold/30 uppercase tracking-[0.3em]">
-                                    ¿Recuerdas tu contraseña?
-                                </span>
-                                <span className="h-px flex-1 bg-spa-border dark:bg-gold/10" />
-                            </div>
-                            <Link href={route("login")}
-                                className="font-sans text-[10px] uppercase tracking-widest text-gold-mid hover:text-gold transition-colors">
-                                Iniciar sesión →
-                            </Link>
-                        </div>
                     </div>
                 </div>
             </div>

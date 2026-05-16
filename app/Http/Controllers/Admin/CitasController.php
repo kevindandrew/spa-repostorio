@@ -18,36 +18,64 @@ class CitasController extends Controller
 {
     public function index(Request $request): Response
     {
-        $year  = (int) $request->input('year',  now()->year);
-        $month = (int) $request->input('month', now()->month);
+        $periodo        = $request->input('periodo', 'mes');
+        $fecha          = $request->input('fecha', now()->toDateString());
+        $year           = (int) $request->input('year',  now()->year);
+        $month          = (int) $request->input('month', now()->month);
+        $estadoFiltro   = $request->input('estado', '');
+        $empleadoFiltro = $request->input('empleado_id', '');
 
-        $citas = Cita::with(['cliente.usuario', 'servicio', 'empleado.usuario'])
-            ->whereYear('fecha_hora_inicio', $year)
-            ->whereMonth('fecha_hora_inicio', $month)
-            ->orderBy('fecha_hora_inicio')
-            ->get()
-            ->map(fn($c) => [
-                'id'             => $c->id,
-                'fecha'          => $c->fecha_hora_inicio->format('Y-m-d'),
-                'hora'           => $c->fecha_hora_inicio->format('H:i'),
-                'hora_fin'       => $c->fecha_hora_fin->format('H:i'),
-                'cliente'        => $c->cliente->usuario->nombre ?? '—',
-                'cliente_id'     => $c->cliente_id,
-                'servicio'       => $c->servicio->nombre ?? '—',
-                'servicio_id'    => $c->servicio_id,
-                'empleado'       => $c->empleado->usuario->nombre ?? '—',
-                'empleado_id'    => $c->empleado_id,
-                'duracion'       => $c->servicio->duracion_minutos ?? 0,
-                'precio_cobrado' => $c->precio_cobrado,
-                'estado'         => $c->estado,
-                'notas_cliente'  => $c->notas_cliente,
-                'notas_empleado' => $c->notas_empleado,
+        $query = Cita::with(['cliente.usuario', 'servicio', 'empleado.usuario']);
+
+        if ($periodo === 'semana') {
+            $start = Carbon::parse($fecha)->startOfWeek(Carbon::MONDAY);
+            $end   = Carbon::parse($fecha)->endOfWeek(Carbon::SUNDAY);
+            $query->whereBetween('fecha_hora_inicio', [
+                $start->copy()->startOfDay(),
+                $end->copy()->endOfDay(),
             ]);
+        } elseif ($periodo === 'dia') {
+            $query->whereDate('fecha_hora_inicio', $fecha);
+        } else {
+            $query->whereYear('fecha_hora_inicio', $year)
+                  ->whereMonth('fecha_hora_inicio', $month);
+        }
+
+        if ($estadoFiltro)   $query->where('estado', $estadoFiltro);
+        if ($empleadoFiltro) $query->where('empleado_id', $empleadoFiltro);
+
+        $citas = $query->orderBy('fecha_hora_inicio')->get()->map(fn($c) => [
+            'id'             => $c->id,
+            'fecha'          => $c->fecha_hora_inicio->format('Y-m-d'),
+            'hora'           => $c->fecha_hora_inicio->format('H:i'),
+            'hora_fin'       => $c->fecha_hora_fin->format('H:i'),
+            'cliente'        => $c->cliente->usuario->nombre ?? '—',
+            'cliente_id'     => $c->cliente_id,
+            'servicio'       => $c->servicio->nombre ?? '—',
+            'servicio_id'    => $c->servicio_id,
+            'empleado'       => $c->empleado->usuario->nombre ?? '—',
+            'empleado_id'    => $c->empleado_id,
+            'duracion'       => $c->servicio->duracion_minutos ?? 0,
+            'precio_cobrado' => $c->precio_cobrado,
+            'estado'         => $c->estado,
+            'notas_cliente'  => $c->notas_cliente,
+            'notas_empleado' => $c->notas_empleado,
+        ]);
+
+        // For semana view: pass the Monday date so the frontend knows the week range
+        $semanaInicio = $periodo === 'semana'
+            ? Carbon::parse($fecha)->startOfWeek(Carbon::MONDAY)->toDateString()
+            : null;
 
         return Inertia::render('Admin/Citas', [
-            'citas'     => $citas,
-            'year'      => $year,
-            'month'     => $month,
+            'citas'           => $citas,
+            'year'            => $year,
+            'month'           => $month,
+            'fecha'           => $fecha,
+            'periodo'         => $periodo,
+            'semana_inicio'   => $semanaInicio,
+            'estado_filtro'   => $estadoFiltro,
+            'empleado_filtro' => $empleadoFiltro,
             'empleados' => Empleado::with('usuario')->where('activo', true)->get()
                 ->map(fn($e) => [
                     'id'           => $e->id,

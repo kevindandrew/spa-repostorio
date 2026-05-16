@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Auth;
 
 class ClientesController extends Controller
 {
@@ -40,6 +41,8 @@ class ClientesController extends Controller
                     ->first()
                     ?->fecha_hora_inicio
                     ?->format('d/m/Y') ?? '—',
+                'usuario_id'    => $c->usuario_id,
+                'bloqueado'     => $c->usuario?->bloqueado_hasta && now()->isBefore($c->usuario->bloqueado_hasta),
             ]);
 
         return Inertia::render('Admin/Clientes', [
@@ -58,11 +61,13 @@ class ClientesController extends Controller
         ]);
 
         $usuario = Usuario::create([
-            'nombre'   => $request->nombre,
-            'correo'   => $request->correo,
-            'password' => Hash::make($request->telefono),
-            'rol'      => 'CLIENTE',
-            'activo'   => true,
+            'nombre'                => $request->nombre,
+            'correo'                => $request->correo,
+            'password'              => Hash::make($request->telefono),
+            'rol'                   => 'CLIENTE',
+            'activo'                => true,
+            'correo_verificado'     => true,
+            'debe_cambiar_password' => true,
         ]);
 
         Cliente::create([
@@ -73,6 +78,16 @@ class ClientesController extends Controller
 
         return redirect()->route('admin.clientes.index')
             ->with('success', "Cliente \"{$request->nombre}\" registrado. Contraseña inicial: {$request->telefono}");
+    }
+
+    public function desbloquear(Usuario $usuario): RedirectResponse
+    {
+        $usuario->forceFill([
+            'intentos_fallidos' => 0,
+            'bloqueado_hasta'   => null,
+        ])->saveQuietly();
+
+        return back()->with('success', "Cuenta de \"{$usuario->nombre}\" desbloqueada.");
     }
 
     public function show(Cliente $cliente): Response

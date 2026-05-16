@@ -16,8 +16,14 @@ class EspecialistasController extends Controller
     public function index(): Response
     {
         $empleados = Empleado::with('usuario')
-            ->withCount(['citas', 'resenas'])
+            ->withCount([
+                'citas',
+                'resenas',
+                'citas as completadas_count' => fn($q) => $q->where('estado', 'COMPLETADA'),
+                'citas as canceladas_count'  => fn($q) => $q->where('estado', 'CANCELADA'),
+            ])
             ->withAvg('resenas', 'calificacion')
+            ->withSum(['citas as ingresos_total' => fn($q) => $q->where('estado', 'COMPLETADA')], 'precio_cobrado')
             ->orderByDesc('created_at')
             ->get()
             ->map(fn($e) => [
@@ -30,10 +36,15 @@ class EspecialistasController extends Controller
                 'fecha_contratacion' => $e->fecha_contratacion?->format('Y-m-d'),
                 'activo'             => $e->activo,
                 'total_citas'        => $e->citas_count,
+                'completadas_count'  => $e->completadas_count ?? 0,
+                'canceladas_count'   => $e->canceladas_count ?? 0,
+                'ingresos_total'     => (float) ($e->ingresos_total ?? 0),
                 'avg_calificacion'   => $e->resenas_avg_calificacion
                                           ? round((float) $e->resenas_avg_calificacion, 1)
                                           : null,
                 'total_resenas'      => $e->resenas_count,
+                'usuario_id'         => $e->usuario_id,
+                'bloqueado'          => $e->usuario?->bloqueado_hasta && now()->isBefore($e->usuario->bloqueado_hasta),
             ]);
 
         return Inertia::render('Admin/Especialistas', [
@@ -41,25 +52,35 @@ class EspecialistasController extends Controller
         ]);
     }
 
+    public function desbloquear(Usuario $usuario): RedirectResponse
+    {
+        $usuario->forceFill([
+            'intentos_fallidos' => 0,
+            'bloqueado_hasta'   => null,
+        ])->saveQuietly();
+
+        return back()->with('success', "Cuenta de \"{$usuario->nombre}\" desbloqueada.");
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'nombre'             => 'required|string|max:100',
             'correo'             => 'required|email|unique:usuarios,correo',
-            'password'           => 'required|string|min:8',
             'especialidad'       => 'required|string|max:100',
-            'telefono'           => 'nullable|string|max:20',
+            'telefono'           => 'required|string|max:20',
             'bio'                => 'nullable|string|max:500',
             'fecha_contratacion' => 'required|date',
         ]);
 
         $usuario = Usuario::create([
-            'nombre'            => $validated['nombre'],
-            'correo'            => $validated['correo'],
-            'password'          => Hash::make($validated['password']),
-            'rol'               => 'EMPLEADO',
-            'correo_verificado' => true,
-            'activo'            => true,
+            'nombre'                => $validated['nombre'],
+            'correo'                => $validated['correo'],
+            'password'              => Hash::make($validated['telefono']),
+            'rol'                   => 'EMPLEADO',
+            'correo_verificado'     => true,
+            'activo'                => true,
+            'debe_cambiar_password' => true,
         ]);
 
         Empleado::create([

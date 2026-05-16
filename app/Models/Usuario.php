@@ -21,23 +21,27 @@ class Usuario extends Authenticatable
         'rol',
         'correo_verificado',
         'activo',
+        'debe_cambiar_password',
         'token_verificacion',
         'token_exp',
+        'intentos_fallidos',
+        'bloqueado_hasta',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
-        'token_verificacion',
     ];
 
     protected function casts(): array
     {
         return [
-            'password'           => 'hashed',
-            'correo_verificado'  => 'boolean',
-            'activo'             => 'boolean',
-            'token_exp'          => 'datetime',
+            'password'              => 'hashed',
+            'correo_verificado'     => 'boolean',
+            'activo'                => 'boolean',
+            'debe_cambiar_password' => 'boolean',
+            'token_exp'             => 'datetime',
+            'bloqueado_hasta'       => 'datetime',
         ];
     }
 

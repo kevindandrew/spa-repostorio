@@ -3,6 +3,96 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import Stars from '@/Components/Stars';
 import { useState } from 'react';
 
+const MEDAL = ['text-yellow-400', 'text-gray-300', 'text-amber-600'];
+const MEDAL_BG = ['bg-yellow-400/10', 'bg-gray-300/10', 'bg-amber-600/10'];
+
+function Ranking({ empleados }) {
+    const [sortBy, setSortBy] = useState('completadas');
+
+    const sorted = [...empleados]
+        .filter(e => e.activo)
+        .sort((a, b) => {
+            if (sortBy === 'completadas') return b.completadas_count - a.completadas_count;
+            if (sortBy === 'calificacion') return (b.avg_calificacion ?? 0) - (a.avg_calificacion ?? 0);
+            if (sortBy === 'ingresos')    return b.ingresos_total - a.ingresos_total;
+            return 0;
+        })
+        .slice(0, 5);
+
+    if (sorted.length === 0) return null;
+
+    return (
+        <div className="kpi-card mb-6">
+            <div className="flex items-center justify-between mb-4">
+                <div>
+                    <h3 className="font-serif text-lg text-gold">Top Especialistas</h3>
+                    <p className="font-sans text-[10px] text-spa-on-light-dim dark:text-spa-on-dark-dim mt-0.5 uppercase tracking-widest">Ranking de rendimiento</p>
+                </div>
+                <div className="flex items-center bg-spa-bg dark:bg-spa-bg rounded-sm border border-gold/20 overflow-hidden">
+                    {[['completadas','Citas'],['calificacion','Rating'],['ingresos','Ingresos']].map(([k, label]) => (
+                        <button key={k} onClick={() => setSortBy(k)}
+                                className={`px-3 py-1.5 font-sans text-[9px] uppercase tracking-widest transition-all
+                                            ${sortBy === k ? 'bg-gold/20 text-gold' : 'text-spa-on-dark-dim hover:text-gold'}`}>
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="space-y-2">
+                {sorted.map((e, i) => (
+                    <div key={e.id} className={`flex items-center gap-4 p-3 rounded-md border border-gold/10 ${i < 3 ? MEDAL_BG[i] : ''} hover:border-gold/25 transition-all`}>
+                        {/* Position */}
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center font-sans text-xs font-bold shrink-0
+                                         ${i < 3 ? MEDAL[i] : 'text-spa-on-dark-dim'} ${i < 3 ? 'border border-current/30' : ''}`}>
+                            {i + 1}
+                        </div>
+
+                        {/* Avatar */}
+                        <div className="w-8 h-8 rounded-full gold-gradient flex items-center justify-center font-sans text-sm font-bold text-gold-text shrink-0">
+                            {e.nombre.charAt(0)}
+                        </div>
+
+                        {/* Name + specialty */}
+                        <div className="flex-1 min-w-0">
+                            <p className="font-sans text-sm font-medium text-spa-on-light dark:text-spa-on-dark truncate">{e.nombre}</p>
+                            <p className="font-sans text-[10px] text-spa-on-light-dim dark:text-spa-on-dark-dim truncate">{e.especialidad ?? '—'}</p>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="flex items-center gap-5 shrink-0">
+                            <div className="text-center">
+                                <p className="font-serif text-lg gold-gradient-text leading-none">{e.completadas_count}</p>
+                                <p className="font-sans text-[8px] uppercase tracking-widest text-spa-on-dark-dim mt-0.5">Compl.</p>
+                            </div>
+                            <div className="text-center">
+                                <p className={`font-serif text-lg leading-none ${e.avg_calificacion ? 'gold-gradient-text' : 'text-spa-on-dark-dim/30'}`}>
+                                    {e.avg_calificacion ?? '—'}
+                                </p>
+                                <p className="font-sans text-[8px] uppercase tracking-widest text-spa-on-dark-dim mt-0.5">Rating</p>
+                            </div>
+                            <div className="text-center hidden sm:block">
+                                <p className="font-serif text-lg gold-gradient-text leading-none">${e.ingresos_total.toLocaleString('es')}</p>
+                                <p className="font-sans text-[8px] uppercase tracking-widest text-spa-on-dark-dim mt-0.5">Ingresos</p>
+                            </div>
+                        </div>
+
+                        {/* Ver citas */}
+                        <button onClick={() => router.get(route('admin.citas.index'), { empleado_id: e.usuario_id, periodo: 'mes' })}
+                                className="shrink-0 flex items-center gap-1 px-2.5 py-1.5 border border-gold/20 rounded-sm
+                                           font-sans text-[9px] uppercase tracking-widest text-gold/60 hover:text-gold hover:border-gold/40 transition-all"
+                                title="Ver citas de este especialista">
+                            <span className="material-symbols-outlined text-[13px]"
+                                  style={{ fontVariationSettings: "'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24" }}>calendar_month</span>
+                            Citas
+                        </button>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 function Icon({ name, className = '' }) {
     return (
         <span className={`material-symbols-outlined ${className}`}
@@ -43,7 +133,7 @@ function Field({ label, error, children }) {
 
 const inputCls = "w-full bg-spa-bg border border-gold/20 rounded-sm px-3 py-2.5 font-sans text-sm text-spa-on-dark placeholder:text-spa-on-dark-dim/40 focus:border-gold/60 focus:outline-none transition-colors";
 
-const BLANK_CREATE = { nombre: '', correo: '', password: '', especialidad: '', telefono: '', bio: '', fecha_contratacion: '' };
+const BLANK_CREATE = { nombre: '', correo: '', especialidad: '', telefono: '', bio: '', fecha_contratacion: '' };
 const BLANK_EDIT   = { nombre: '', especialidad: '', telefono: '', bio: '', fecha_contratacion: '', activo: true };
 
 export default function Especialistas({ empleados }) {
@@ -108,6 +198,9 @@ export default function Especialistas({ empleados }) {
                 </button>
             </div>
 
+            {/* Ranking */}
+            <Ranking empleados={empleados} />
+
             {/* KPI rápidos */}
             {(() => {
                 const conResenas   = empleados.filter(e => e.avg_calificacion !== null);
@@ -140,7 +233,7 @@ export default function Especialistas({ empleados }) {
                 <table className="w-full">
                     <thead>
                         <tr className="border-b border-gold/10">
-                            {['Especialista', 'Especialidad', 'Teléfono', 'Contratación', 'Citas', 'Calificación', 'Estado', ''].map(h => (
+                            {['Especialista', 'Especialidad', 'Teléfono', 'Contratación', 'Total', 'Completadas', 'Calificación', 'Estado', ''].map(h => (
                                 <th key={h} className="px-5 py-3.5 text-left font-sans text-[9px] uppercase tracking-[0.2em] text-spa-on-light-dim dark:text-gold/40">
                                     {h}
                                 </th>
@@ -161,6 +254,12 @@ export default function Especialistas({ empleados }) {
                                         <div>
                                             <p className="font-sans text-sm font-medium text-spa-on-light dark:text-spa-on-dark">{e.nombre}</p>
                                             <p className="font-sans text-[10px] text-spa-on-light-dim dark:text-spa-on-dark-dim">{e.correo}</p>
+                                            {e.bloqueado && (
+                                                <span className="inline-flex items-center gap-1 font-sans text-[9px] uppercase tracking-wider text-red-400">
+                                                    <Icon name="lock" className="text-[11px]" />
+                                                    Bloqueada
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
                                 </td>
@@ -181,6 +280,9 @@ export default function Especialistas({ empleados }) {
                                 </td>
                                 <td className="px-5 py-4">
                                     <span className="font-serif text-lg gold-gradient-text">{e.total_citas}</span>
+                                </td>
+                                <td className="px-5 py-4">
+                                    <span className="font-serif text-lg text-green-400">{e.completadas_count}</span>
                                 </td>
                                 <td className="px-5 py-4">
                                     {e.avg_calificacion !== null ? (
@@ -221,6 +323,13 @@ export default function Especialistas({ empleados }) {
                                                 <Icon name="person_off" className="text-[16px]" />
                                             </button>
                                         )}
+                                        {e.bloqueado && (
+                                            <button onClick={() => router.post(route('admin.especialistas.desbloquear', e.usuario_id))}
+                                                    className="p-1.5 text-red-400 hover:text-red-300 transition-colors rounded-sm hover:bg-red-400/10"
+                                                    title="Desbloquear cuenta">
+                                                <Icon name="lock_open" className="text-[16px]" />
+                                            </button>
+                                        )}
                                     </div>
                                 </td>
                             </tr>
@@ -243,20 +352,25 @@ export default function Especialistas({ empleados }) {
                         </Field>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <Field label="Contraseña" error={createForm.errors.password}>
-                            <input type="password" value={createForm.data.password} onChange={e => createForm.setData('password', e.target.value)}
-                                   className={inputCls} placeholder="Mínimo 8 caracteres" />
-                        </Field>
                         <Field label="Especialidad" error={createForm.errors.especialidad}>
                             <input value={createForm.data.especialidad} onChange={e => createForm.setData('especialidad', e.target.value)}
                                    className={inputCls} placeholder="Masajista, Esteticista..." />
                         </Field>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <Field label="Teléfono" error={createForm.errors.telefono}>
+                        <Field label="Teléfono (contraseña inicial)" error={createForm.errors.telefono}>
                             <input value={createForm.data.telefono} onChange={e => createForm.setData('telefono', e.target.value)}
                                    className={inputCls} placeholder="+1 555 000 0000" />
                         </Field>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="col-span-2 bg-gold/5 border border-gold/20 rounded-sm px-4 py-2.5 flex items-center gap-2">
+                            <span className="material-symbols-outlined text-gold/50 text-[16px]"
+                                  style={{ fontVariationSettings: "'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24" }}>info</span>
+                            <p className="font-sans text-[10px] text-spa-on-dark-dim">
+                                La contraseña inicial será el número de teléfono. El especialista deberá cambiarla en su primer acceso.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
                         <Field label="Fecha de contratación" error={createForm.errors.fecha_contratacion}>
                             <input type="date" value={createForm.data.fecha_contratacion} onChange={e => createForm.setData('fecha_contratacion', e.target.value)}
                                    className={inputCls} />

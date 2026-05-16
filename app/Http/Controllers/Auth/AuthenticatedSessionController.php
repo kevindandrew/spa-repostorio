@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Auth\VerificarDosFactoresController;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,15 +32,37 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $user = Auth::user();
+
+        // 2FA para empleados: cerrar sesión y pedir código por correo
+        if ($user->rol === 'EMPLEADO') {
+            $userId  = $user->id;
+            $correo  = $user->correo;
+            $remember = $request->boolean('remember');
+
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            VerificarDosFactoresController::enviarCodigo(
+                \App\Models\User::find($userId)
+            );
+
+            $request->session()->put([
+                '2fa_pending_id'     => $userId,
+                '2fa_pending_correo' => $correo,
+                '2fa_remember'       => $remember,
+            ]);
+
+            return redirect()->route('2fa.show');
+        }
+
         $request->session()->regenerate();
 
-        $rol = Auth::user()->rol;
-
-        $destino = match ($rol) {
-            'ADMIN'    => route('admin.dashboard', absolute: false),
-            'EMPLEADO' => route('empleado.dashboard', absolute: false),
-            'CLIENTE'  => route('cliente.dashboard', absolute: false),
-            default    => route('login', absolute: false),
+        $destino = match ($user->rol) {
+            'ADMIN'   => route('admin.dashboard', absolute: false),
+            'CLIENTE' => route('cliente.dashboard', absolute: false),
+            default   => route('login', absolute: false),
         };
 
         return redirect()->intended($destino);

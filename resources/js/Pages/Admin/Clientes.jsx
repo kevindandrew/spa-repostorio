@@ -4,6 +4,10 @@ import { Link } from '@inertiajs/react';
 import { useState } from 'react';
 import InputError from '@/Components/InputError';
 
+function desbloquear(usuarioId) {
+    router.post(route('admin.clientes.desbloquear', usuarioId));
+}
+
 function Icon({ name, className = '' }) {
     return (
         <span className={`material-symbols-outlined ${className}`}
@@ -258,9 +262,17 @@ export default function Clientes({ clientes, filters }) {
                                                         font-sans text-sm font-bold text-gold-text shrink-0">
                                             {c.nombre.charAt(0)}
                                         </div>
-                                        <p className="font-sans text-sm font-medium text-spa-on-light dark:text-spa-on-dark">
-                                            {c.nombre}
-                                        </p>
+                                        <div>
+                                            <p className="font-sans text-sm font-medium text-spa-on-light dark:text-spa-on-dark">
+                                                {c.nombre}
+                                            </p>
+                                            {c.bloqueado && (
+                                                <span className="inline-flex items-center gap-1 font-sans text-[9px] uppercase tracking-wider text-red-400">
+                                                    <Icon name="lock" className="text-[11px]" />
+                                                    Bloqueada
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </td>
                                 <td className="px-5 py-4">
@@ -280,12 +292,22 @@ export default function Clientes({ clientes, filters }) {
                                     </span>
                                 </td>
                                 <td className="px-5 py-4">
-                                    <Link href={route('admin.clientes.show', c.id)}
-                                          className="flex items-center gap-1 font-sans text-[10px] uppercase tracking-widest
-                                                     text-gold/60 hover:text-gold transition-colors">
-                                        <Icon name="visibility" className="text-[15px]" />
-                                        Ver
-                                    </Link>
+                                    <div className="flex items-center gap-3">
+                                        <Link href={route('admin.clientes.show', c.id)}
+                                              className="flex items-center gap-1 font-sans text-[10px] uppercase tracking-widest
+                                                         text-gold/60 hover:text-gold transition-colors">
+                                            <Icon name="visibility" className="text-[15px]" />
+                                            Ver
+                                        </Link>
+                                        {c.bloqueado && (
+                                            <button onClick={() => desbloquear(c.usuario_id)}
+                                                    className="flex items-center gap-1 font-sans text-[10px] uppercase tracking-widest
+                                                               text-red-400 hover:text-red-300 transition-colors">
+                                                <Icon name="lock_open" className="text-[15px]" />
+                                                Desbloquear
+                                            </button>
+                                        )}
+                                    </div>
                                 </td>
                             </tr>
                         ))}

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Http\Controllers\Auth\VerificarCorreoController;
 
 class RegisteredUserController extends Controller
 {
@@ -46,6 +47,8 @@ class RegisteredUserController extends Controller
         event(new Registered($usuario));
         Auth::login($usuario);
 
-        return redirect(route('cliente.dashboard'));
+        VerificarCorreoController::generarCodigo($usuario);
+
+        return redirect()->route('verificar.correo');
     }
 }

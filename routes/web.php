@@ -53,15 +53,17 @@ Route::middleware(['auth', 'role:ADMIN'])
         Route::delete('/servicios/{servicio}',[AdminServicios::class, 'destroy'])->name('servicios.destroy');
 
         // Especialistas
-        Route::get('/especialistas',                [AdminEspecialistas::class, 'index'])->name('especialistas.index');
-        Route::post('/especialistas',               [AdminEspecialistas::class, 'store'])->name('especialistas.store');
-        Route::patch('/especialistas/{empleado}',   [AdminEspecialistas::class, 'update'])->name('especialistas.update');
-        Route::delete('/especialistas/{empleado}',  [AdminEspecialistas::class, 'destroy'])->name('especialistas.destroy');
+        Route::get('/especialistas',                          [AdminEspecialistas::class, 'index'])->name('especialistas.index');
+        Route::post('/especialistas',                         [AdminEspecialistas::class, 'store'])->name('especialistas.store');
+        Route::patch('/especialistas/{empleado}',             [AdminEspecialistas::class, 'update'])->name('especialistas.update');
+        Route::delete('/especialistas/{empleado}',            [AdminEspecialistas::class, 'destroy'])->name('especialistas.destroy');
+        Route::post('/especialistas/{usuario}/desbloquear',   [AdminEspecialistas::class, 'desbloquear'])->name('especialistas.desbloquear');
 
         // Clientes
-        Route::get('/clientes',             [AdminClientes::class, 'index'])->name('clientes.index');
-        Route::post('/clientes',            [AdminClientes::class, 'store'])->name('clientes.store');
-        Route::get('/clientes/{cliente}',   [AdminClientes::class, 'show'])->name('clientes.show');
+        Route::get('/clientes',                         [AdminClientes::class, 'index'])->name('clientes.index');
+        Route::post('/clientes',                        [AdminClientes::class, 'store'])->name('clientes.store');
+        Route::get('/clientes/{cliente}',               [AdminClientes::class, 'show'])->name('clientes.show');
+        Route::post('/clientes/{usuario}/desbloquear',  [AdminClientes::class, 'desbloquear'])->name('clientes.desbloquear');
     });
 
 // ── EMPLEADO ───────────────────────────────────────────

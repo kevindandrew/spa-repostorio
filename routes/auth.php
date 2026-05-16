@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\CambiarPasswordController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\VerificarCorreoController;
+use App\Http\Controllers\Auth\VerificarDosFactoresController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -56,4 +59,28 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    Route::get('cambiar-password', [CambiarPasswordController::class, 'show'])
+        ->name('password.change');
+    Route::post('cambiar-password', [CambiarPasswordController::class, 'update'])
+        ->name('password.change.update');
+
+    // Verificación de correo (clientes)
+    Route::get('verificar-correo', [VerificarCorreoController::class, 'show'])
+        ->name('verificar.correo');
+    Route::post('verificar-correo', [VerificarCorreoController::class, 'store'])
+        ->name('verificar.correo.store');
+    Route::post('verificar-correo/reenviar', [VerificarCorreoController::class, 'reenviar'])
+        ->name('verificar.correo.reenviar');
+
+    // 2FA para empleados (sin estar autenticado)
+});
+
+Route::middleware('guest')->group(function () {
+    Route::get('verificar-2fa', [VerificarDosFactoresController::class, 'show'])
+        ->name('2fa.show');
+    Route::post('verificar-2fa', [VerificarDosFactoresController::class, 'store'])
+        ->name('2fa.store');
+    Route::post('verificar-2fa/reenviar', [VerificarDosFactoresController::class, 'reenviar'])
+        ->name('2fa.reenviar');
 });

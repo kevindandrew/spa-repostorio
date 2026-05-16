@@ -28,6 +28,11 @@ class User extends Authenticatable
         'rol',
         'correo_verificado',
         'activo',
+        'debe_cambiar_password',
+        'token_verificacion',
+        'token_exp',
+        'intentos_fallidos',
+        'bloqueado_hasta',
     ];
 
     protected $hidden = [
@@ -38,14 +43,21 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'password'          => 'hashed',
-            'correo_verificado' => 'boolean',
-            'activo'            => 'boolean',
+            'password'              => 'hashed',
+            'correo_verificado'     => 'boolean',
+            'activo'                => 'boolean',
+            'debe_cambiar_password' => 'boolean',
+            'token_exp'             => 'datetime',
+            'bloqueado_hasta'       => 'datetime',
         ];
     }
 
-    // Breeze usa 'email' para mostrar el correo en vistas
     public function getEmailAttribute(): string
+    {
+        return $this->correo;
+    }
+
+    public function getEmailForPasswordReset(): string
     {
         return $this->correo;
     }
