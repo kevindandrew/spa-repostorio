@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CategoriaServicio;
 use App\Models\Empleado;
 use App\Models\Usuario;
 use Illuminate\Http\RedirectResponse;
@@ -15,7 +16,7 @@ class EspecialistasController extends Controller
 {
     public function index(): Response
     {
-        $empleados = Empleado::with('usuario')
+        $empleados = Empleado::with('usuario', 'categoria')
             ->withCount([
                 'citas',
                 'resenas',
@@ -45,10 +46,18 @@ class EspecialistasController extends Controller
                 'total_resenas'      => $e->resenas_count,
                 'usuario_id'         => $e->usuario_id,
                 'bloqueado'          => $e->usuario?->bloqueado_hasta && now()->isBefore($e->usuario->bloqueado_hasta),
+                'categoria_id'       => $e->categoria_id,
+                'categoria_nombre'   => $e->categoria?->nombre,
             ]);
 
+        $categorias = CategoriaServicio::where('activo', true)
+            ->orderBy('nombre')
+            ->get()
+            ->map(fn($c) => ['id' => $c->id, 'nombre' => $c->nombre]);
+
         return Inertia::render('Admin/Especialistas', [
-            'empleados' => $empleados,
+            'empleados'  => $empleados,
+            'categorias' => $categorias,
         ]);
     }
 
@@ -68,6 +77,7 @@ class EspecialistasController extends Controller
             'nombre'             => 'required|string|max:100',
             'correo'             => 'required|email|unique:usuarios,correo',
             'especialidad'       => 'required|string|max:100',
+            'categoria_id'       => 'nullable|exists:categorias_servicio,id',
             'telefono'           => 'required|string|max:20',
             'bio'                => 'nullable|string|max:500',
             'fecha_contratacion' => 'required|date',
@@ -86,6 +96,7 @@ class EspecialistasController extends Controller
         Empleado::create([
             'usuario_id'         => $usuario->id,
             'especialidad'       => $validated['especialidad'],
+            'categoria_id'       => $validated['categoria_id'] ?? null,
             'telefono'           => $validated['telefono'] ?? null,
             'bio'                => $validated['bio'] ?? null,
             'fecha_contratacion' => $validated['fecha_contratacion'],
@@ -100,6 +111,7 @@ class EspecialistasController extends Controller
         $validated = $request->validate([
             'nombre'             => 'required|string|max:100',
             'especialidad'       => 'required|string|max:100',
+            'categoria_id'       => 'nullable|exists:categorias_servicio,id',
             'telefono'           => 'nullable|string|max:20',
             'bio'                => 'nullable|string|max:500',
             'fecha_contratacion' => 'required|date',
@@ -109,6 +121,7 @@ class EspecialistasController extends Controller
         $empleado->usuario->update(['nombre' => $validated['nombre']]);
         $empleado->update([
             'especialidad'       => $validated['especialidad'],
+            'categoria_id'       => $validated['categoria_id'] ?? null,
             'telefono'           => $validated['telefono'] ?? null,
             'bio'                => $validated['bio'] ?? null,
             'fecha_contratacion' => $validated['fecha_contratacion'],

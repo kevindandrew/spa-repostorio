@@ -44,7 +44,7 @@ export default function DeleteUserForm() {
                         Eliminar cuenta
                     </h2>
                     <p className="font-sans text-xs text-spa-on-light-dim dark:text-spa-on-dark-dim mt-0.5">
-                        Una vez eliminada, todos los datos serán borrados permanentemente
+                        Tu cuenta quedará desactivada. Solo un administrador puede reactivarla.
                     </p>
                 </div>
             </div>
@@ -86,7 +86,7 @@ export default function DeleteUserForm() {
                         {/* Cuerpo modal */}
                         <form onSubmit={submit} className="px-6 py-5 space-y-5">
                             <p className="font-sans text-sm text-spa-on-light-dim dark:text-spa-on-dark-dim leading-relaxed">
-                                Esta acción es irreversible. Todos tus datos, citas e historial serán eliminados permanentemente. Ingresa tu contraseña para confirmar.
+                                Tu cuenta quedará desactivada y no podrás iniciar sesión. Tu historial de citas se conserva. Si deseas reactivarla, deberás contactar a un administrador del spa.
                             </p>
 
                             <div>

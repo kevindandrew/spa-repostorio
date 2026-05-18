@@ -38,14 +38,27 @@ export default function Reservar({ servicios, empleados, slots, diasDisponibles,
     const servicioActual = servicios.find(s => s.id === servicioId);
     const empleadoActual = empleados.find(e => e.id === empleadoId);
 
+    // Only show employees whose category matches the selected service (or employees with no category)
+    const empleadosFiltrados = servicioActual?.categoria_id
+        ? empleados.filter(e => !e.categoria_id || e.categoria_id === servicioActual.categoria_id)
+        : empleados;
+
     // Inicializa step si hay preselect
     useEffect(() => {
         if (preselect?.servicio_id) setStep(2);
     }, []);
 
     function selectServicio(id) {
+        const svc = servicios.find(s => s.id === id);
+        const emp = empleados.find(e => e.id === empleadoId);
+        // Clear selected employee if their category doesn't match the new service
+        if (emp && svc?.categoria_id && emp.categoria_id && emp.categoria_id !== svc.categoria_id) {
+            setEmpleadoId(null);
+            setData(d => ({ ...d, servicio_id: id, empleado_id: '', fecha: '', hora: '' }));
+        } else {
+            setData(d => ({ ...d, servicio_id: id }));
+        }
         setServicioId(id);
-        setData(d => ({ ...d, servicio_id: id }));
         setStep(2);
     }
 
@@ -187,7 +200,7 @@ export default function Reservar({ servicios, empleados, slots, diasDisponibles,
                                             {s.duracion} min
                                         </span>
                                         <span className="font-serif text-xl gold-gradient-text">
-                                            ${s.precio.toFixed(2)}
+                                            Bs {s.precio.toFixed(2)}
                                         </span>
                                     </div>
                                 </button>
@@ -210,7 +223,7 @@ export default function Reservar({ servicios, empleados, slots, diasDisponibles,
                                 <p className="font-serif text-base text-spa-on-light dark:text-spa-on-dark truncate">
                                     {servicioActual.nombre}
                                     <span className="font-sans text-xs text-spa-on-light-dim dark:text-spa-on-dark-dim ml-2 not-italic">
-                                        {servicioActual.duracion} min · ${servicioActual.precio.toFixed(2)}
+                                        {servicioActual.duracion} min · Bs {servicioActual.precio.toFixed(2)}
                                     </span>
                                 </p>
                             </div>
@@ -230,8 +243,13 @@ export default function Reservar({ servicios, empleados, slots, diasDisponibles,
                             <p className="font-sans text-xs text-spa-on-light-dim dark:text-spa-on-dark-dim mb-4">
                                 Todos nuestros especialistas están certificados
                             </p>
+                            {empleadosFiltrados.length === 0 && (
+                                <div className="p-4 rounded-sm border border-amber-400/20 bg-amber-400/5 text-amber-400 font-sans text-sm">
+                                    No hay especialistas disponibles para este servicio.
+                                </div>
+                            )}
                             <div className="space-y-3">
-                                {empleados.map(e => (
+                                {empleadosFiltrados.map(e => (
                                     <div key={e.id}
                                          className={`flex items-center gap-3 p-4 rounded-sm
                                                     transition-all duration-200 border
@@ -497,7 +515,7 @@ export default function Reservar({ servicios, empleados, slots, diasDisponibles,
                                             Total
                                         </span>
                                         <span className="font-serif text-2xl gold-gradient-text">
-                                            ${servicioActual?.precio.toFixed(2)}
+                                            Bs {servicioActual?.precio.toFixed(2)}
                                         </span>
                                     </div>
                                 </div>

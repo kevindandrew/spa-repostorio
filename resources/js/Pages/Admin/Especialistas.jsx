@@ -72,7 +72,7 @@ function Ranking({ empleados }) {
                                 <p className="font-sans text-[8px] uppercase tracking-widest text-spa-on-dark-dim mt-0.5">Rating</p>
                             </div>
                             <div className="text-center hidden sm:block">
-                                <p className="font-serif text-lg gold-gradient-text leading-none">${e.ingresos_total.toLocaleString('es')}</p>
+                                <p className="font-serif text-lg gold-gradient-text leading-none">Bs {e.ingresos_total.toLocaleString('es')}</p>
                                 <p className="font-sans text-[8px] uppercase tracking-widest text-spa-on-dark-dim mt-0.5">Ingresos</p>
                             </div>
                         </div>
@@ -133,10 +133,10 @@ function Field({ label, error, children }) {
 
 const inputCls = "w-full bg-spa-bg border border-gold/20 rounded-sm px-3 py-2.5 font-sans text-sm text-spa-on-dark placeholder:text-spa-on-dark-dim/40 focus:border-gold/60 focus:outline-none transition-colors";
 
-const BLANK_CREATE = { nombre: '', correo: '', especialidad: '', telefono: '', bio: '', fecha_contratacion: '' };
-const BLANK_EDIT   = { nombre: '', especialidad: '', telefono: '', bio: '', fecha_contratacion: '', activo: true };
+const BLANK_CREATE = { nombre: '', correo: '', especialidad: '', categoria_id: '', telefono: '', bio: '', fecha_contratacion: '' };
+const BLANK_EDIT   = { nombre: '', especialidad: '', categoria_id: '', telefono: '', bio: '', fecha_contratacion: '', activo: true };
 
-export default function Especialistas({ empleados }) {
+export default function Especialistas({ empleados, categorias }) {
     const [createOpen, setCreateOpen]     = useState(false);
     const [editTarget, setEditTarget]     = useState(null);
     const [confirmToggle, setConfirmToggle] = useState(null);
@@ -148,6 +148,7 @@ export default function Especialistas({ empleados }) {
         setEditTarget(e);
         editForm.setData({
             nombre: e.nombre, especialidad: e.especialidad ?? '',
+            categoria_id: e.categoria_id ?? '',
             telefono: e.telefono ?? '', bio: e.bio ?? '',
             fecha_contratacion: e.fecha_contratacion ?? '',
             activo: e.activo,
@@ -361,6 +362,15 @@ export default function Especialistas({ empleados }) {
                                    className={inputCls} placeholder="+1 555 000 0000" />
                         </Field>
                     </div>
+                    <Field label="Categoría de servicios" error={createForm.errors.categoria_id}>
+                        <select value={createForm.data.categoria_id} onChange={e => createForm.setData('categoria_id', e.target.value)}
+                                className={inputCls}>
+                            <option value="">Sin restricción de categoría</option>
+                            {categorias.map(c => (
+                                <option key={c.id} value={c.id}>{c.nombre}</option>
+                            ))}
+                        </select>
+                    </Field>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="col-span-2 bg-gold/5 border border-gold/20 rounded-sm px-4 py-2.5 flex items-center gap-2">
                             <span className="material-symbols-outlined text-gold/50 text-[16px]"
@@ -406,6 +416,15 @@ export default function Especialistas({ empleados }) {
                                 <input value={editForm.data.especialidad} onChange={e => editForm.setData('especialidad', e.target.value)} className={inputCls} />
                             </Field>
                         </div>
+                        <Field label="Categoría de servicios" error={editForm.errors.categoria_id}>
+                            <select value={editForm.data.categoria_id} onChange={e => editForm.setData('categoria_id', e.target.value)}
+                                    className={inputCls}>
+                                <option value="">Sin restricción de categoría</option>
+                                {categorias.map(c => (
+                                    <option key={c.id} value={c.id}>{c.nombre}</option>
+                                ))}
+                            </select>
+                        </Field>
                         <div className="grid grid-cols-2 gap-4">
                             <Field label="Teléfono" error={editForm.errors.telefono}>
                                 <input value={editForm.data.telefono} onChange={e => editForm.setData('telefono', e.target.value)} className={inputCls} />

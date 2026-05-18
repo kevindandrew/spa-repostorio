@@ -6,15 +6,18 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\CategoriaServicio;
 
 class Empleado extends Model
 {
-    use HasUuids;
+    use HasUuids, SoftDeletes;
 
     protected $fillable = [
         'usuario_id',
         'telefono',
         'especialidad',
+        'categoria_id',
         'bio',
         'foto_url',
         'fecha_contratacion',
@@ -32,6 +35,11 @@ class Empleado extends Model
     public function usuario(): BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'usuario_id');
+    }
+
+    public function categoria(): BelongsTo
+    {
+        return $this->belongsTo(CategoriaServicio::class, 'categoria_id');
     }
 
     public function disponibilidades(): HasMany

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\SolicitudPaquete;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -38,6 +39,9 @@ class HandleInertiaRequests extends Middleware
                 'success' => session('success'),
                 'error'   => session('error'),
             ],
+            'solicitudesPendientes' => $request->user()?->rol === 'ADMIN'
+                ? SolicitudPaquete::where('estado', 'PENDIENTE')->count()
+                : 0,
         ];
     }
 }

@@ -1,5 +1,9 @@
 import { Head, usePage } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
+import {
+    BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
+    PieChart, Pie, Cell, Legend,
+} from 'recharts';
 
 function Icon({ name, className = '' }) {
     return (
@@ -11,11 +15,11 @@ function Icon({ name, className = '' }) {
 }
 
 const ESTADO_STYLE = {
-    PENDIENTE:  { text: 'text-amber-400',  bg: 'bg-amber-400/10',  label: 'Pendiente'  },
-    CONFIRMADA: { text: 'text-blue-400',   bg: 'bg-blue-400/10',   label: 'Confirmada' },
-    COMPLETADA: { text: 'text-green-400',  bg: 'bg-green-400/10',  label: 'Completada' },
-    CANCELADA:  { text: 'text-red-400',    bg: 'bg-red-400/10',    label: 'Cancelada'  },
-    NO_ASISTIO: { text: 'text-gray-400',   bg: 'bg-gray-400/10',   label: 'No asistió' },
+    PENDIENTE:  { text: 'text-amber-400',  bg: 'bg-amber-400/10',  label: 'Pendiente',  color: '#fbbf24' },
+    CONFIRMADA: { text: 'text-blue-400',   bg: 'bg-blue-400/10',   label: 'Confirmada', color: '#60a5fa' },
+    COMPLETADA: { text: 'text-green-400',  bg: 'bg-green-400/10',  label: 'Completada', color: '#4ade80' },
+    CANCELADA:  { text: 'text-red-400',    bg: 'bg-red-400/10',    label: 'Cancelada',  color: '#f87171' },
+    NO_ASISTIO: { text: 'text-gray-400',   bg: 'bg-gray-400/10',   label: 'No asistió', color: '#9ca3af' },
 };
 
 const ACTIVIDAD_ICON = {
@@ -26,20 +30,67 @@ const ACTIVIDAD_ICON = {
     NO_ASISTIO: { icon: 'person_off',   color: 'text-gray-400'  },
 };
 
-const CHART_BARS = [
-    { day: 'Lun', h: '60%' }, { day: 'Mar', h: '85%' }, { day: 'Mié', h: '45%' },
-    { day: 'Jue', h: '75%' }, { day: 'Vie', h: '95%' }, { day: 'Sáb', h: '80%' }, { day: 'Dom', h: '30%' },
-];
+const GOLD       = '#e8c17f';
+const GOLD_DARK  = '#c9973e';
+const TOOLTIP_STYLE = {
+    contentStyle: {
+        background: '#1a1a1a',
+        border: '1px solid rgba(232,193,127,0.2)',
+        borderRadius: '4px',
+        fontSize: '11px',
+        fontFamily: 'sans-serif',
+        color: '#e0d0b0',
+    },
+    cursor: { fill: 'rgba(232,193,127,0.06)' },
+};
 
-export default function Dashboard({ stats, timeline, actividad }) {
+function CustomTooltipIngresos({ active, payload, label }) {
+    if (!active || !payload?.length) return null;
+    return (
+        <div style={TOOLTIP_STYLE.contentStyle} className="px-3 py-2">
+            <p className="text-gold/70 mb-0.5">{label}</p>
+            <p className="font-semibold text-gold">Bs {Number(payload[0].value).toFixed(2)}</p>
+        </div>
+    );
+}
+
+function CustomTooltipCitas({ active, payload, label }) {
+    if (!active || !payload?.length) return null;
+    return (
+        <div style={TOOLTIP_STYLE.contentStyle} className="px-3 py-2">
+            <p className="text-gold/70 mb-0.5">{label}</p>
+            <p className="font-semibold text-gold">{payload[0].value} citas</p>
+        </div>
+    );
+}
+
+function CustomTooltipServicios({ active, payload, label }) {
+    if (!active || !payload?.length) return null;
+    return (
+        <div style={TOOLTIP_STYLE.contentStyle} className="px-3 py-2">
+            <p className="text-gold/70 mb-0.5">{label}</p>
+            <p className="font-semibold text-gold">{payload[0].value} reservas</p>
+        </div>
+    );
+}
+
+export default function Dashboard({ stats, timeline, actividad, citasPorEstado, ingresosPorDia, citasPorDiaSemana, topServicios }) {
     const { auth } = usePage().props;
     const today = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
 
+    // Pie data
+    const pieData = Object.entries(citasPorEstado ?? {}).map(([estado, total]) => ({
+        name:  ESTADO_STYLE[estado]?.label ?? estado,
+        value: total,
+        color: ESTADO_STYLE[estado]?.color ?? GOLD,
+    }));
+    const totalCitasMes = pieData.reduce((a, d) => a + d.value, 0);
+
     const kpis = [
-        { label: 'Citas Hoy',        value: stats.citasHoy,         icon: 'event',      trend: null          },
-        { label: 'Ingresos Semana',  value: '$—',                   icon: 'payments',   trend: null          },
-        { label: 'Especialistas',    value: stats.empleadosActivos,  icon: 'groups',     trend: 'Activos'     },
-        { label: 'Clientes Nuevos',  value: stats.clientesNuevos,   icon: 'person_add', trend: 'Este mes'    },
+        { label: 'Citas Hoy',       value: stats.citasHoy,                                                    icon: 'event',      trend: null         },
+        { label: 'Ingresos Semana', value: `Bs ${Number(stats.ingresosSemana ?? 0).toFixed(2)}`,              icon: 'payments',   trend: 'Completadas' },
+        { label: 'Especialistas',   value: stats.empleadosActivos,                                             icon: 'groups',     trend: 'Activos'    },
+        { label: 'Clientes Nuevos', value: stats.clientesNuevos,                                               icon: 'person_add', trend: 'Este mes'   },
     ];
 
     return (
@@ -79,33 +130,36 @@ export default function Dashboard({ stats, timeline, actividad }) {
                 ))}
             </div>
 
-            {/* Gráfica + Timeline */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
+            {/* Fila 1: Ingresos 7 días + Timeline */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5">
 
+                {/* Ingresos últimos 7 días */}
                 <div className="lg:col-span-2 kpi-card">
-                    <div className="flex justify-between items-center mb-8">
-                        <h3 className="font-serif text-xl text-spa-on-light dark:text-spa-on-dark">Ingresos Semanales</h3>
-                        <span className="font-sans text-[10px] text-gold border-b border-gold pb-0.5 uppercase tracking-widest">
-                            Esta semana
-                        </span>
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 className="font-serif text-xl text-spa-on-light dark:text-spa-on-dark">Ingresos</h3>
+                            <p className="font-sans text-[10px] text-gold/50 uppercase tracking-widest mt-0.5">Últimos 7 días · citas completadas</p>
+                        </div>
                     </div>
-                    <div className="flex items-end justify-between gap-3 h-48 px-2 relative">
-                        {[0, 1, 2, 3].map(i => (
-                            <div key={i} className="absolute inset-x-2 h-px bg-spa-border dark:bg-gold/5"
-                                 style={{ bottom: `${i * 33}%` }} />
-                        ))}
-                        {CHART_BARS.map(({ day, h }) => (
-                            <div key={day} className="flex flex-col items-center flex-1 group relative z-10">
-                                <div className="w-full gold-gradient rounded-t-sm opacity-80 group-hover:opacity-100 transition-all duration-300"
-                                     style={{ height: h }} />
-                                <p className="font-sans text-[9px] mt-3 text-spa-on-light-dim dark:text-spa-on-dark-dim uppercase tracking-wider">
-                                    {day}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
+                    <ResponsiveContainer width="100%" height={200}>
+                        <BarChart data={ingresosPorDia} barSize={28}>
+                            <CartesianGrid vertical={false} stroke="rgba(232,193,127,0.07)" />
+                            <XAxis dataKey="dia" tick={{ fontSize: 10, fill: '#9a8060', fontFamily: 'sans-serif' }} axisLine={false} tickLine={false} />
+                            <YAxis tick={{ fontSize: 10, fill: '#9a8060', fontFamily: 'sans-serif' }} axisLine={false} tickLine={false} tickFormatter={v => `Bs${v}`} width={52} />
+                            <Tooltip content={<CustomTooltipIngresos />} cursor={TOOLTIP_STYLE.cursor} />
+                            <Bar dataKey="ingresos" radius={[3, 3, 0, 0]}
+                                 fill="url(#goldGrad)" />
+                            <defs>
+                                <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor={GOLD} stopOpacity={0.9} />
+                                    <stop offset="100%" stopColor={GOLD_DARK} stopOpacity={0.5} />
+                                </linearGradient>
+                            </defs>
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
 
+                {/* Timeline hoy */}
                 <div className="kpi-card">
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="font-serif text-xl text-spa-on-light dark:text-spa-on-dark">Hoy</h3>
@@ -141,13 +195,106 @@ export default function Dashboard({ stats, timeline, actividad }) {
                 </div>
             </div>
 
+            {/* Fila 2: Pie estados + Días semana + Top servicios */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-5">
+
+                {/* Donut — citas por estado (mes actual) */}
+                <div className="kpi-card flex flex-col">
+                    <div className="mb-4">
+                        <h3 className="font-serif text-xl text-spa-on-light dark:text-spa-on-dark">Estados</h3>
+                        <p className="font-sans text-[10px] text-gold/50 uppercase tracking-widest mt-0.5">
+                            {totalCitasMes} citas este mes
+                        </p>
+                    </div>
+                    {pieData.length === 0 ? (
+                        <div className="flex-1 flex items-center justify-center">
+                            <p className="font-sans text-sm text-spa-on-light-dim dark:text-spa-on-dark-dim italic">Sin datos aún</p>
+                        </div>
+                    ) : (
+                        <>
+                            <ResponsiveContainer width="100%" height={180}>
+                                <PieChart>
+                                    <Pie data={pieData} cx="50%" cy="50%" innerRadius={52} outerRadius={78}
+                                         paddingAngle={3} dataKey="value" stroke="none">
+                                        {pieData.map((d, i) => (
+                                            <Cell key={i} fill={d.color} fillOpacity={0.85} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip
+                                        contentStyle={TOOLTIP_STYLE.contentStyle}
+                                        formatter={(val, name) => [`${val} citas`, name]}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
+                            <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
+                                {pieData.map(d => (
+                                    <div key={d.name} className="flex items-center gap-2">
+                                        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: d.color }} />
+                                        <span className="font-sans text-[10px] text-spa-on-light-dim dark:text-spa-on-dark-dim truncate">{d.name}</span>
+                                        <span className="font-sans text-[10px] text-spa-on-light dark:text-spa-on-dark ml-auto">{d.value}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
+                </div>
+
+                {/* Barras — citas por día de semana */}
+                <div className="kpi-card">
+                    <div className="mb-6">
+                        <h3 className="font-serif text-xl text-spa-on-light dark:text-spa-on-dark">Por día</h3>
+                        <p className="font-sans text-[10px] text-gold/50 uppercase tracking-widest mt-0.5">Días más concurridos</p>
+                    </div>
+                    {citasPorDiaSemana.length === 0 ? (
+                        <p className="font-sans text-sm text-spa-on-light-dim dark:text-spa-on-dark-dim italic">Sin datos aún</p>
+                    ) : (
+                        <ResponsiveContainer width="100%" height={180}>
+                            <BarChart data={citasPorDiaSemana} barSize={22}>
+                                <CartesianGrid vertical={false} stroke="rgba(232,193,127,0.07)" />
+                                <XAxis dataKey="dia" tick={{ fontSize: 10, fill: '#9a8060', fontFamily: 'sans-serif' }} axisLine={false} tickLine={false} />
+                                <YAxis tick={{ fontSize: 10, fill: '#9a8060', fontFamily: 'sans-serif' }} axisLine={false} tickLine={false} allowDecimals={false} width={24} />
+                                <Tooltip content={<CustomTooltipCitas />} cursor={TOOLTIP_STYLE.cursor} />
+                                <Bar dataKey="citas" fill={GOLD} fillOpacity={0.75} radius={[3, 3, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    )}
+                </div>
+
+                {/* Barras horizontales — top 5 servicios */}
+                <div className="kpi-card">
+                    <div className="mb-6">
+                        <h3 className="font-serif text-xl text-spa-on-light dark:text-spa-on-dark">Top Servicios</h3>
+                        <p className="font-sans text-[10px] text-gold/50 uppercase tracking-widest mt-0.5">Más solicitados</p>
+                    </div>
+                    {topServicios.length === 0 ? (
+                        <p className="font-sans text-sm text-spa-on-light-dim dark:text-spa-on-dark-dim italic">Sin datos aún</p>
+                    ) : (
+                        <ResponsiveContainer width="100%" height={180}>
+                            <BarChart data={topServicios} layout="vertical" barSize={16}>
+                                <CartesianGrid horizontal={false} stroke="rgba(232,193,127,0.07)" />
+                                <XAxis type="number" tick={{ fontSize: 10, fill: '#9a8060', fontFamily: 'sans-serif' }} axisLine={false} tickLine={false} allowDecimals={false} />
+                                <YAxis type="category" dataKey="nombre" width={90}
+                                       tick={{ fontSize: 9, fill: '#9a8060', fontFamily: 'sans-serif' }}
+                                       axisLine={false} tickLine={false} />
+                                <Tooltip content={<CustomTooltipServicios />} cursor={TOOLTIP_STYLE.cursor} />
+                                <Bar dataKey="total" fill="url(#goldGrad2)" radius={[0, 3, 3, 0]}>
+                                    <defs>
+                                        <linearGradient id="goldGrad2" x1="0" y1="0" x2="1" y2="0">
+                                            <stop offset="0%" stopColor={GOLD_DARK} stopOpacity={0.6} />
+                                            <stop offset="100%" stopColor={GOLD} stopOpacity={0.9} />
+                                        </linearGradient>
+                                    </defs>
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    )}
+                </div>
+            </div>
+
             {/* Actividad reciente */}
             <div className="kpi-card">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="font-serif text-xl text-spa-on-light dark:text-spa-on-dark">Actividad Reciente</h3>
-                    <button className="font-sans text-[10px] text-gold uppercase tracking-widest hover:opacity-70 transition-opacity">
-                        Ver informe
-                    </button>
                 </div>
                 {actividad.length === 0 ? (
                     <p className="font-sans text-sm text-spa-on-light-dim dark:text-spa-on-dark-dim italic">

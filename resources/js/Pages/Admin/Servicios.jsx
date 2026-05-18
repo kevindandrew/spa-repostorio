@@ -173,7 +173,7 @@ export default function Servicios({ servicios, categorias }) {
                                 <Icon name="timer" className="text-[13px]" />
                                 {s.duracion} min
                             </span>
-                            <span className="font-serif text-xl gold-gradient-text">${s.precio}</span>
+                            <span className="font-serif text-xl gold-gradient-text">Bs {s.precio}</span>
                         </div>
                     </div>
                 ))}
@@ -216,7 +216,7 @@ export default function Servicios({ servicios, categorias }) {
                         </Field>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <Field label="Precio ($)" error={form.errors.precio}>
+                        <Field label="Precio (Bs)" error={form.errors.precio}>
                             <input type="number" step="0.01" min="0" value={form.data.precio}
                                    onChange={e => form.setData('precio', e.target.value)}
                                    className={inputCls} placeholder="0.00" />

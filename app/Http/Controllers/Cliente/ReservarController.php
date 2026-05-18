@@ -23,12 +23,13 @@ class ReservarController extends Controller
             ->orderBy('nombre')
             ->get()
             ->map(fn($s) => [
-                'id'          => $s->id,
-                'nombre'      => $s->nombre,
-                'descripcion' => $s->descripcion,
-                'categoria'   => $s->categoria->nombre ?? '—',
-                'duracion'    => $s->duracion_minutos,
-                'precio'      => (float) $s->precio,
+                'id'           => $s->id,
+                'nombre'       => $s->nombre,
+                'descripcion'  => $s->descripcion,
+                'categoria'    => $s->categoria->nombre ?? '—',
+                'categoria_id' => $s->categoria_id,
+                'duracion'     => $s->duracion_minutos,
+                'precio'       => (float) $s->precio,
             ]);
 
         $empleados = Empleado::with('usuario')
@@ -41,6 +42,7 @@ class ReservarController extends Controller
                 'nombre'           => $e->usuario->nombre ?? '—',
                 'especialidad'     => $e->especialidad,
                 'bio'              => $e->bio,
+                'categoria_id'     => $e->categoria_id,
                 'avg_calificacion' => $e->resenas_avg_calificacion
                                         ? round((float) $e->resenas_avg_calificacion, 1)
                                         : null,
@@ -117,14 +119,20 @@ class ReservarController extends Controller
         ]);
 
         $servicio = Servicio::findOrFail($validated['servicio_id']);
+        $empleado = Empleado::findOrFail($validated['empleado_id']);
+
+        if ($empleado->categoria_id && $servicio->categoria_id !== $empleado->categoria_id) {
+            return back()->withErrors(['servicio_id' => 'El servicio no pertenece a la categoría del especialista.']);
+        }
+
         $inicio   = Carbon::createFromFormat('Y-m-d H:i', $validated['fecha'] . ' ' . $validated['hora']);
         $fin      = $inicio->copy()->addMinutes($servicio->duracion_minutos);
 
-        // Overlap check
+        // Overlap check including BREAK_MINUTOS buffer between appointments
         $conflict = Cita::where('empleado_id', $validated['empleado_id'])
             ->whereNotIn('estado', ['CANCELADA'])
-            ->where('fecha_hora_inicio', '<', $fin)
-            ->where('fecha_hora_fin', '>', $inicio)
+            ->where('fecha_hora_inicio', '<', $fin->copy()->addMinutes(self::BREAK_MINUTOS))
+            ->where('fecha_hora_fin', '>', $inicio->copy()->subMinutes(self::BREAK_MINUTOS))
             ->exists();
 
         abort_if($conflict, 409, 'Este horario ya no está disponible. Por favor elige otro.');
@@ -143,6 +151,8 @@ class ReservarController extends Controller
         return redirect()->route('cliente.citas.index')
             ->with('success', '¡Cita reservada con éxito! Te esperamos.');
     }
+
+    private const BREAK_MINUTOS = 15;
 
     private function computeSlots(string $servicioId, string $empleadoId, string $fechaStr): array
     {
@@ -165,6 +175,7 @@ class ReservarController extends Controller
             ->get();
 
         $duracion = (int) $servicio->duracion_minutos;
+        $break    = self::BREAK_MINUTOS;
 
         [$hI, $mI] = array_map('intval', explode(':', substr($disponibilidad->hora_inicio, 0, 5)));
         [$hF, $mF] = array_map('intval', explode(':', substr($disponibilidad->hora_fin,    0, 5)));
@@ -186,8 +197,12 @@ class ReservarController extends Controller
             $slotFin = $slotInicio->copy()->addMinutes($duracion);
 
             if ($slotInicio->isAfter(now())) {
+                // Slot is free if every existing appointment ends at least BREAK_MINUTOS
+                // before this slot starts, and this slot ends at least BREAK_MINUTOS
+                // before the next appointment starts.
                 $isFree = $citasExistentes->every(
-                    fn($c) => $slotFin->lte($c->fecha_hora_inicio) || $slotInicio->gte($c->fecha_hora_fin)
+                    fn($c) => $slotFin->copy()->addMinutes($break)->lte($c->fecha_hora_inicio)
+                           || $c->fecha_hora_fin->copy()->addMinutes($break)->lte($slotInicio)
                 );
 
                 if ($isFree) {
@@ -195,7 +210,7 @@ class ReservarController extends Controller
                 }
             }
 
-            $currentMin += 30; // 30-min grid
+            $currentMin += 15; // 15-min grid to match break precision
         }
 
         return $slots;

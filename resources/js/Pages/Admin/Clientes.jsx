@@ -154,9 +154,10 @@ function ModalRegistrarCliente({ onClose }) {
     );
 }
 
-export default function Clientes({ clientes, filters }) {
+export default function Clientes({ clientes, eliminados, filters }) {
     const [search, setSearch] = useState(filters.search ?? '');
     const [showModal, setShowModal] = useState(false);
+    const [showEliminados, setShowEliminados] = useState(false);
 
     function handleSearch(e) {
         e.preventDefault();
@@ -232,6 +233,73 @@ export default function Clientes({ clientes, filters }) {
                     </button>
                 )}
             </form>
+
+            {/* Eliminados toggle */}
+            {eliminados.length > 0 && (
+                <button onClick={() => setShowEliminados(v => !v)}
+                        className="flex items-center gap-2 mb-4 font-sans text-[10px] uppercase tracking-widest
+                                   text-spa-on-light-dim dark:text-spa-on-dark-dim hover:text-gold transition-colors">
+                    <Icon name={showEliminados ? 'expand_less' : 'expand_more'} className="text-[16px]" />
+                    {eliminados.length} cuenta{eliminados.length !== 1 ? 's' : ''} eliminada{eliminados.length !== 1 ? 's' : ''}
+                </button>
+            )}
+
+            {/* Tabla eliminados */}
+            {showEliminados && eliminados.length > 0 && (
+                <div className="kpi-card overflow-hidden p-0 mb-6 border-red-400/20">
+                    <div className="px-5 py-3 border-b border-red-400/10 flex items-center gap-2">
+                        <Icon name="delete_history" className="text-red-400/60 text-[16px]" />
+                        <span className="font-sans text-[10px] uppercase tracking-widest text-red-400/70">
+                            Cuentas eliminadas
+                        </span>
+                    </div>
+                    <table className="w-full">
+                        <thead>
+                            <tr className="border-b border-red-400/10">
+                                {['Cliente', 'Correo', 'Citas históricas', 'Eliminado el', ''].map(h => (
+                                    <th key={h} className="px-5 py-3 text-left font-sans text-[9px] uppercase tracking-[0.2em] text-red-400/40">
+                                        {h}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {eliminados.map(c => (
+                                <tr key={c.id} className="border-b border-red-400/5 hover:bg-red-400/5 transition-colors opacity-70 hover:opacity-100">
+                                    <td className="px-5 py-3.5">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-full bg-red-400/10 flex items-center justify-center
+                                                            font-sans text-sm font-bold text-red-400/60 shrink-0">
+                                                {c.nombre.charAt(0)}
+                                            </div>
+                                            <p className="font-sans text-sm text-spa-on-light-dim dark:text-spa-on-dark-dim line-through">
+                                                {c.nombre}
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td className="px-5 py-3.5">
+                                        <p className="font-sans text-sm text-spa-on-light-dim dark:text-spa-on-dark-dim">{c.correo}</p>
+                                    </td>
+                                    <td className="px-5 py-3.5">
+                                        <span className="font-serif text-base text-spa-on-light-dim dark:text-spa-on-dark-dim">{c.total_citas}</span>
+                                    </td>
+                                    <td className="px-5 py-3.5">
+                                        <span className="font-sans text-xs text-spa-on-light-dim dark:text-spa-on-dark-dim">{c.eliminado_en}</span>
+                                    </td>
+                                    <td className="px-5 py-3.5">
+                                        <button onClick={() => router.post(route('admin.clientes.restore', c.id))}
+                                                className="flex items-center gap-1 font-sans text-[10px] uppercase tracking-widest
+                                                           text-green-400 hover:text-green-300 transition-colors">
+                                            <Icon name="restore" className="text-[15px]" />
+                                            Restaurar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             {/* Tabla */}
             <div className="kpi-card overflow-hidden p-0">

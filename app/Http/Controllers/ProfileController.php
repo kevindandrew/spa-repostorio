@@ -53,6 +53,9 @@ class ProfileController extends Controller
 
         Auth::logout();
 
+        // Soft-delete associated records first, then the user
+        $user->cliente?->delete();
+        $user->empleado?->delete();
         $user->delete();
 
         $request->session()->invalidate();

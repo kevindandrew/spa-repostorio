@@ -81,15 +81,17 @@ class CitasController extends Controller
                     'id'           => $e->id,
                     'nombre'       => $e->usuario->nombre ?? '—',
                     'especialidad' => $e->especialidad,
+                    'categoria_id' => $e->categoria_id,
                 ]),
             'clientes'  => Cliente::with('usuario')->get()
                 ->map(fn($c) => ['id' => $c->id, 'nombre' => $c->usuario->nombre ?? '—']),
             'servicios' => Servicio::where('activo', true)->get()
                 ->map(fn($s) => [
-                    'id'      => $s->id,
-                    'nombre'  => $s->nombre,
-                    'duracion'=> $s->duracion_minutos,
-                    'precio'  => $s->precio,
+                    'id'          => $s->id,
+                    'nombre'      => $s->nombre,
+                    'duracion'    => $s->duracion_minutos,
+                    'precio'      => $s->precio,
+                    'categoria_id'=> $s->categoria_id,
                 ]),
         ]);
     }
@@ -106,11 +108,28 @@ class CitasController extends Controller
         ]);
 
         $servicio = Servicio::findOrFail($validated['servicio_id']);
-        $inicio   = Carbon::parse($validated['fecha_hora_inicio']);
+        $empleado = Empleado::findOrFail($validated['empleado_id']);
+
+        if ($empleado->categoria_id && $servicio->categoria_id !== $empleado->categoria_id) {
+            return back()->withErrors(['servicio_id' => 'El servicio no pertenece a la categoría del especialista.']);
+        }
+
+        $inicio = Carbon::parse($validated['fecha_hora_inicio']);
+        $fin    = $inicio->copy()->addMinutes($servicio->duracion_minutos);
+
+        $conflict = \App\Models\Cita::where('empleado_id', $validated['empleado_id'])
+            ->whereNotIn('estado', ['CANCELADA'])
+            ->where('fecha_hora_inicio', '<', $fin->copy()->addMinutes(15))
+            ->where('fecha_hora_fin', '>', $inicio->copy()->subMinutes(15))
+            ->exists();
+
+        if ($conflict) {
+            return back()->withErrors(['fecha_hora_inicio' => 'El especialista no está disponible en ese horario (incluye 15 min de descanso entre citas).']);
+        }
 
         Cita::create([
             ...$validated,
-            'fecha_hora_fin' => $inicio->copy()->addMinutes($servicio->duracion_minutos),
+            'fecha_hora_fin' => $fin,
             'estado'         => 'PENDIENTE',
         ]);
 

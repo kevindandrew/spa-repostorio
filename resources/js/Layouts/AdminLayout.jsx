@@ -6,7 +6,8 @@ const NAV = [
     { label: 'Dashboard',    icon: 'dashboard',     route: 'admin.dashboard'          },
     { label: 'Citas',        icon: 'event',         route: 'admin.citas.index'        },
     { label: 'Servicios',    icon: 'auto_awesome',  route: 'admin.servicios.index'    },
-    { label: 'Paquetes',    icon: 'local_offer',   route: 'admin.paquetes.index'     },
+    { label: 'Paquetes',     icon: 'local_offer',   route: 'admin.paquetes.index'     },
+    { label: 'Solicitudes',  icon: 'inbox',         route: 'admin.solicitudes.index', badge: true },
     { label: 'Especialistas',icon: 'groups',        route: 'admin.especialistas.index'},
     { label: 'Clientes',     icon: 'person',        route: 'admin.clientes.index'     },
 ];
@@ -21,7 +22,7 @@ function Icon({ name, className = '' }) {
 }
 
 export default function AdminLayout({ children, title = '' }) {
-    const { auth } = usePage().props;
+    const { auth, solicitudesPendientes } = usePage().props;
     const { dark, toggle } = useTheme();
     const currentRoute = route().current();
 
@@ -46,15 +47,22 @@ export default function AdminLayout({ children, title = '' }) {
 
                 {/* Nav */}
                 <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-                    {NAV.map(({ label, icon, route: r }) => {
+                    {NAV.map(({ label, icon, route: r, badge }) => {
                         const isActive = r && (currentRoute === r || currentRoute?.startsWith(r.replace('.index', '')));
                         const Tag = r ? Link : 'a';
                         const props = r ? { href: route(r) } : { href: '#' };
+                        const pendCount = badge ? (solicitudesPendientes ?? 0) : 0;
                         return (
                             <Tag key={label} {...props}
                                 className={`nav-item ${isActive ? 'active' : ''}`}>
                                 <Icon name={icon} className="text-[20px]" />
-                                <span>{label}</span>
+                                <span className="flex-1">{label}</span>
+                                {badge && pendCount > 0 && (
+                                    <span className="ml-auto min-w-[18px] h-[18px] px-1 rounded-full bg-gold
+                                                       text-[9px] font-bold text-spa-bg flex items-center justify-center">
+                                        {pendCount}
+                                    </span>
+                                )}
                             </Tag>
                         );
                     })}

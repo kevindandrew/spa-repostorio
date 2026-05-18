@@ -53,7 +53,6 @@ export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: "",
         password: "",
-        remember: false,
     });
     const [showPassword, setShowPassword] = useState(false);
 
@@ -235,23 +234,6 @@ export default function Login({ status, canResetPassword }) {
                                     className="mt-1 text-xs"
                                 />
                             </div>
-
-                            {/* Remember */}
-                            <label className="flex items-center gap-3 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    name="remember"
-                                    checked={data.remember}
-                                    onChange={(e) =>
-                                        setData("remember", e.target.checked)
-                                    }
-                                    className="w-4 h-4 rounded-none border-gold/40 text-gold-mid
-                                               focus:ring-gold/30 bg-transparent"
-                                />
-                                <span className="font-sans text-xs text-spa-on-light-dim dark:text-spa-on-dark-dim">
-                                    Mantener sesión activa 30 días
-                                </span>
-                            </label>
 
                             {/* Submit */}
                             <button

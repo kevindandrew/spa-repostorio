@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\ServiciosController as AdminServicios;
 use App\Http\Controllers\Admin\EspecialistasController as AdminEspecialistas;
 use App\Http\Controllers\Admin\ClientesController as AdminClientes;
 use App\Http\Controllers\Admin\PaquetesController as AdminPaquetes;
+use App\Http\Controllers\Admin\SolicitudesPaqueteController as AdminSolicitudes;
 use App\Http\Controllers\Cliente\PaquetesController as ClientePaquetes;
+use App\Http\Controllers\Cliente\SolicitudesPaqueteController as ClienteSolicitudes;
 use App\Http\Controllers\Empleado\DashboardController as EmpleadoDashboard;
 use App\Http\Controllers\Empleado\CitasController as EmpleadoCitas;
 use App\Http\Controllers\Empleado\DisponibilidadController as EmpleadoDisponibilidad;
@@ -67,10 +69,16 @@ Route::middleware(['auth', 'role:ADMIN'])
         Route::patch('/paquetes/{paquete}',  [AdminPaquetes::class, 'update'])->name('paquetes.update');
         Route::delete('/paquetes/{paquete}', [AdminPaquetes::class, 'destroy'])->name('paquetes.destroy');
 
+        // Solicitudes de paquete
+        Route::get('/solicitudes-paquetes',              [AdminSolicitudes::class, 'index'])->name('solicitudes.index');
+        Route::patch('/solicitudes-paquetes/{solicitud}', [AdminSolicitudes::class, 'update'])->name('solicitudes.update');
+
         // Clientes
         Route::get('/clientes',                         [AdminClientes::class, 'index'])->name('clientes.index');
         Route::post('/clientes',                        [AdminClientes::class, 'store'])->name('clientes.store');
         Route::get('/clientes/{cliente}',               [AdminClientes::class, 'show'])->name('clientes.show');
+        Route::delete('/clientes/{cliente}',            [AdminClientes::class, 'destroy'])->name('clientes.destroy');
+        Route::post('/clientes/{id}/restaurar',         [AdminClientes::class, 'restore'])->name('clientes.restore');
         Route::post('/clientes/{usuario}/desbloquear',  [AdminClientes::class, 'desbloquear'])->name('clientes.desbloquear');
     });
 
@@ -111,7 +119,8 @@ Route::middleware(['auth', 'role:CLIENTE'])
         Route::post('/resenas',  [ClienteResenas::class, 'store'])->name('resenas.store');
 
         // Paquetes / Promociones
-        Route::get('/paquetes',  [ClientePaquetes::class, 'index'])->name('paquetes.index');
+        Route::get('/paquetes',           [ClientePaquetes::class, 'index'])->name('paquetes.index');
+        Route::post('/solicitudes-paquete', [ClienteSolicitudes::class, 'store'])->name('solicitudes.store');
     });
 
 // Alias legacy /dashboard → redirige según rol

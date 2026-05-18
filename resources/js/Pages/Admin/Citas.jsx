@@ -161,9 +161,16 @@ const inputCls =
     "w-full bg-spa-bg border border-gold/20 rounded-sm px-3 py-2.5 font-sans text-sm text-spa-on-dark placeholder:text-spa-on-dark-dim/40 focus:border-gold/60 focus:outline-none transition-colors";
 const selectCls = `${inputCls} cursor-pointer`;
 
+function addMins(timeStr, mins) {
+    const [h, m] = timeStr.split(':').map(Number);
+    const t = h * 60 + m + mins;
+    return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+}
+
 /* ── Cita card (reutilizable) ───────────────────────────── */
 function CitaCard({ cita, onEdit, onDelete }) {
     const s = ESTADO[cita.estado] ?? ESTADO.PENDIENTE;
+    const libreDesde = addMins(cita.hora_fin, 15);
     return (
         <div
             className={`p-3 rounded-md border border-gold/10 hover:border-gold/25 bg-white/[0.02] transition-all`}
@@ -174,9 +181,13 @@ function CitaCard({ cita, onEdit, onDelete }) {
                     <div>
                         <p className="font-serif text-sm gold-gradient-text leading-none">
                             {cita.hora}
+                            <span className="font-sans text-[9px] text-spa-on-dark-dim ml-1.5">→ {cita.hora_fin}</span>
                         </p>
-                        <p className="font-sans text-[9px] text-spa-on-dark-dim">
-                            {cita.hora_fin} · {cita.duracion}min
+                        <p className="font-sans text-[9px] text-spa-on-dark-dim flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[10px]"
+                                  style={{ fontVariationSettings: "'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24" }}>timer</span>
+                            {cita.duracion}min
+                            <span className="text-amber-400/70 ml-1">· libre {libreDesde}</span>
                         </p>
                     </div>
                 </div>
@@ -194,7 +205,7 @@ function CitaCard({ cita, onEdit, onDelete }) {
             </p>
             <p className="font-sans text-[10px] text-spa-on-light-dim dark:text-spa-on-dark-dim mt-0.5">
                 {cita.empleado}
-                {cita.precio_cobrado ? ` · $${cita.precio_cobrado}` : ""}
+                {cita.precio_cobrado ? ` · Bs ${cita.precio_cobrado}` : ""}
             </p>
             <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gold/10">
                 {cita.estado === "PENDIENTE" && (
@@ -386,6 +397,18 @@ export default function Citas({
             if (s) form.setData("precio_cobrado", s.precio);
         }
     }, [form.data.servicio_id]);
+
+    // When employee changes, clear service if it doesn't match the new employee's category
+    useEffect(() => {
+        if (!form.data.empleado_id) return;
+        const emp = empleados.find(e => e.id === form.data.empleado_id);
+        if (emp?.categoria_id && form.data.servicio_id) {
+            const svc = servicios.find(s => s.id === form.data.servicio_id);
+            if (svc && svc.categoria_id !== emp.categoria_id) {
+                form.setData("servicio_id", "");
+            }
+        }
+    }, [form.data.empleado_id]);
 
     function openCreate(prefillDate) {
         form.reset();
@@ -988,20 +1011,30 @@ export default function Citas({
                         </Field>
                     </div>
                     <Field label="Servicio" error={form.errors.servicio_id}>
-                        <select
-                            value={form.data.servicio_id}
-                            onChange={(e) =>
-                                form.setData("servicio_id", e.target.value)
-                            }
-                            className={selectCls}
-                        >
-                            <option value="">Seleccionar servicio...</option>
-                            {servicios.map((s) => (
-                                <option key={s.id} value={s.id}>
-                                    {s.nombre} — {s.duracion} min
-                                </option>
-                            ))}
-                        </select>
+                        {(() => {
+                            const emp = empleados.find(e => e.id === form.data.empleado_id);
+                            const filteredSvc = emp?.categoria_id
+                                ? servicios.filter(s => s.categoria_id === emp.categoria_id)
+                                : servicios;
+                            return (
+                                <select
+                                    value={form.data.servicio_id}
+                                    onChange={(e) => form.setData("servicio_id", e.target.value)}
+                                    className={selectCls}
+                                >
+                                    <option value="">
+                                        {emp?.categoria_id
+                                            ? `Servicios de ${emp.especialidad || 'esta categoría'}...`
+                                            : 'Seleccionar servicio...'}
+                                    </option>
+                                    {filteredSvc.map((s) => (
+                                        <option key={s.id} value={s.id}>
+                                            {s.nombre} — {s.duracion} min
+                                        </option>
+                                    ))}
+                                </select>
+                            );
+                        })()}
                     </Field>
                     <div className="grid grid-cols-2 gap-4">
                         <Field
@@ -1021,7 +1054,7 @@ export default function Citas({
                             />
                         </Field>
                         <Field
-                            label="Precio ($)"
+                            label="Precio (Bs)"
                             error={form.errors.precio_cobrado}
                         >
                             <input
@@ -1109,7 +1142,7 @@ export default function Citas({
                             </select>
                         </Field>
                         <Field
-                            label="Precio cobrado ($)"
+                            label="Precio cobrado (Bs)"
                             error={editForm.errors.precio_cobrado}
                         >
                             <input

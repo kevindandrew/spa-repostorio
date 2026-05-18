@@ -127,7 +127,7 @@ export default function ClienteDetalle({ cliente, historial }) {
                                             </span>
                                             {cita.precio && (
                                                 <span className="font-serif text-sm gold-gradient-text">
-                                                    ${cita.precio}
+                                                    Bs {cita.precio}
                                                 </span>
                                             )}
                                         </div>

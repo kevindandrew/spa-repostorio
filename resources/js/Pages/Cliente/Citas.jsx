@@ -189,7 +189,7 @@ export default function Citas({ citas, filtroEstado }) {
                                     </span>
                                     {cita.precio && (
                                         <span className="font-serif text-base text-spa-on-light dark:text-spa-on-dark">
-                                            ${parseFloat(cita.precio).toFixed(2)}
+                                            Bs {parseFloat(cita.precio).toFixed(2)}
                                         </span>
                                     )}
                                     {/* Calificar — solo COMPLETADA sin reseña */}

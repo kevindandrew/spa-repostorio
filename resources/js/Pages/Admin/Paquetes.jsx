@@ -94,7 +94,7 @@ function PaqueteForm({ form, servicios, onSubmit, onCancel, submitLabel }) {
                                 <Icon name={sel ? 'check_box' : 'check_box_outline_blank'} className="text-[16px] shrink-0" />
                                 <div className="min-w-0">
                                     <p className="font-sans text-xs truncate">{s.nombre}</p>
-                                    <p className="font-sans text-[9px] opacity-60">${s.precio}</p>
+                                    <p className="font-sans text-[9px] opacity-60">Bs {s.precio}</p>
                                 </div>
                             </button>
                         );
@@ -102,13 +102,13 @@ function PaqueteForm({ form, servicios, onSubmit, onCancel, submitLabel }) {
                 </div>
                 {form.data.servicios.length > 0 && (
                     <p className="font-sans text-[10px] text-spa-on-dark-dim mt-2">
-                        Precio individual: <span className="text-spa-on-dark">${precioOriginal.toFixed(2)}</span>
+                        Precio individual: <span className="text-spa-on-dark">Bs {precioOriginal.toFixed(2)}</span>
                     </p>
                 )}
             </Field>
 
             <div className="grid grid-cols-2 gap-4 items-end">
-                <Field label="Precio del paquete ($)" error={form.errors.precio}>
+                <Field label="Precio del paquete (Bs)" error={form.errors.precio}>
                     <input type="number" step="0.01" min="0" value={form.data.precio}
                            onChange={e => form.setData('precio', e.target.value)}
                            className={inputCls} placeholder="0.00" />
@@ -117,7 +117,7 @@ function PaqueteForm({ form, servicios, onSubmit, onCancel, submitLabel }) {
                     <div className="pb-0.5">
                         <p className="font-sans text-[10px] text-green-400 flex items-center gap-1">
                             <Icon name="savings" className="text-[14px]" />
-                            Ahorro del cliente: ${ahorro.toFixed(2)}
+                            Ahorro del cliente: Bs {ahorro.toFixed(2)}
                         </p>
                     </div>
                 )}
@@ -271,13 +271,13 @@ export default function Paquetes({ paquetes, servicios }) {
                                 </td>
                                 {/* Precio */}
                                 <td className="px-5 py-4">
-                                    <p className="font-serif text-lg gold-gradient-text">${p.precio.toFixed(2)}</p>
+                                    <p className="font-serif text-lg gold-gradient-text">Bs {p.precio.toFixed(2)}</p>
                                     {p.servicios.length > 0 && (() => {
                                         const orig   = p.servicios.reduce((a, s) => a + s.precio, 0);
                                         const ahorro = orig - p.precio;
                                         return ahorro > 0 ? (
                                             <p className="font-sans text-[9px] text-green-400 mt-0.5">
-                                                Ahorra ${ahorro.toFixed(2)}
+                                                Ahorra Bs {ahorro.toFixed(2)}
                                             </p>
                                         ) : null;
                                     })()}

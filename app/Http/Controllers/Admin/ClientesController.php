@@ -45,9 +45,22 @@ class ClientesController extends Controller
                 'bloqueado'     => $c->usuario?->bloqueado_hasta && now()->isBefore($c->usuario->bloqueado_hasta),
             ]);
 
+        $eliminados = Cliente::onlyTrashed()
+            ->with(['usuario' => fn($q) => $q->withTrashed()])
+            ->withCount('citas')
+            ->get()
+            ->map(fn($c) => [
+                'id'          => $c->id,
+                'nombre'      => $c->usuario?->nombre ?? '—',
+                'correo'      => $c->usuario?->correo ?? '—',
+                'total_citas' => $c->citas_count,
+                'eliminado_en'=> $c->deleted_at->format('d/m/Y'),
+            ]);
+
         return Inertia::render('Admin/Clientes', [
-            'clientes' => $clientes,
-            'filters'  => $request->only(['search']),
+            'clientes'   => $clientes,
+            'eliminados' => $eliminados,
+            'filters'    => $request->only(['search']),
         ]);
     }
 
@@ -78,6 +91,26 @@ class ClientesController extends Controller
 
         return redirect()->route('admin.clientes.index')
             ->with('success', "Cliente \"{$request->nombre}\" registrado. Contraseña inicial: {$request->telefono}");
+    }
+
+    public function destroy(Cliente $cliente): RedirectResponse
+    {
+        $nombre = $cliente->usuario?->nombre;
+        $cliente->usuario?->delete();
+        $cliente->delete();
+
+        return back()->with('success', "Cliente \"{$nombre}\" eliminado.");
+    }
+
+    public function restore(string $id): RedirectResponse
+    {
+        $cliente = Cliente::withTrashed()->findOrFail($id);
+        // withTrashed() needed because the usuario is still soft-deleted when we restore
+        $usuario = $cliente->usuario()->withTrashed()->first();
+        $usuario?->restore();
+        $cliente->restore();
+
+        return back()->with('success', "Cuenta de \"{$usuario?->nombre}\" restaurada.");
     }
 
     public function desbloquear(Usuario $usuario): RedirectResponse
