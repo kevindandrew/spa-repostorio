@@ -27,9 +27,10 @@ class PaquetesController extends Controller
                 'activo'       => $p->activo,
                 'vigente'      => $p->estaVigente(),
                 'servicios'    => $p->servicios->map(fn($s) => [
-                    'id'     => $s->id,
-                    'nombre' => $s->nombre,
-                    'precio' => (float) $s->precio,
+                    'id'       => $s->id,
+                    'nombre'   => $s->nombre,
+                    'precio'   => (float) $s->precio,
+                    'cantidad' => (int) ($s->pivot->cantidad ?? 1),
                 ]),
             ]);
 
@@ -51,18 +52,19 @@ class PaquetesController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'nombre'       => 'required|string|max:200',
-            'descripcion'  => 'nullable|string|max:1000',
-            'precio'       => 'required|numeric|min:0',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin'    => 'required|date|after_or_equal:fecha_inicio',
-            'activo'       => 'boolean',
-            'servicios'    => 'required|array|min:1',
-            'servicios.*'  => 'exists:servicios,id',
+            'nombre'             => 'required|string|max:200',
+            'descripcion'        => 'nullable|string|max:1000',
+            'precio'             => 'required|numeric|min:0',
+            'fecha_inicio'       => 'required|date',
+            'fecha_fin'          => 'required|date|after_or_equal:fecha_inicio',
+            'activo'             => 'boolean',
+            'servicios'          => 'required|array|min:1',
+            'servicios.*.id'     => 'required|exists:servicios,id',
+            'servicios.*.cantidad' => 'required|integer|min:1|max:10',
         ]);
 
         $paquete = Paquete::create($validated);
-        $paquete->servicios()->sync($validated['servicios']);
+        $paquete->servicios()->sync($this->buildSyncData($validated['servicios']));
 
         return back()->with('success', "Paquete \"{$paquete->nombre}\" creado.");
     }
@@ -70,18 +72,19 @@ class PaquetesController extends Controller
     public function update(Request $request, Paquete $paquete): RedirectResponse
     {
         $validated = $request->validate([
-            'nombre'       => 'required|string|max:200',
-            'descripcion'  => 'nullable|string|max:1000',
-            'precio'       => 'required|numeric|min:0',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin'    => 'required|date|after_or_equal:fecha_inicio',
-            'activo'       => 'boolean',
-            'servicios'    => 'required|array|min:1',
-            'servicios.*'  => 'exists:servicios,id',
+            'nombre'             => 'required|string|max:200',
+            'descripcion'        => 'nullable|string|max:1000',
+            'precio'             => 'required|numeric|min:0',
+            'fecha_inicio'       => 'required|date',
+            'fecha_fin'          => 'required|date|after_or_equal:fecha_inicio',
+            'activo'             => 'boolean',
+            'servicios'          => 'required|array|min:1',
+            'servicios.*.id'     => 'required|exists:servicios,id',
+            'servicios.*.cantidad' => 'required|integer|min:1|max:10',
         ]);
 
         $paquete->update($validated);
-        $paquete->servicios()->sync($validated['servicios']);
+        $paquete->servicios()->sync($this->buildSyncData($validated['servicios']));
 
         return back()->with('success', "Paquete \"{$paquete->nombre}\" actualizado.");
     }
@@ -91,5 +94,13 @@ class PaquetesController extends Controller
         $nombre = $paquete->nombre;
         $paquete->delete();
         return back()->with('success', "Paquete \"{$nombre}\" eliminado.");
+    }
+
+    // Convierte [{id, cantidad}] → [uuid => ['cantidad' => n]] para sync()
+    private function buildSyncData(array $servicios): array
+    {
+        return collect($servicios)
+            ->mapWithKeys(fn($s) => [$s['id'] => ['cantidad' => (int) $s['cantidad']]])
+            ->toArray();
     }
 }

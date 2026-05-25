@@ -306,7 +306,7 @@ export default function Clientes({ clientes, eliminados, filters }) {
                 <table className="w-full">
                     <thead>
                         <tr className="border-b border-gold/10">
-                            {['Cliente', 'Correo', 'Teléfono', 'Total citas', 'Última visita', ''].map(h => (
+                            {['Cliente', 'Correo', 'Teléfono', 'Nivel', 'Total citas', 'Última visita', ''].map(h => (
                                 <th key={h} className="px-5 py-3.5 text-left font-sans text-[9px] uppercase tracking-[0.2em] text-spa-on-light-dim dark:text-gold/40">
                                     {h}
                                 </th>
@@ -350,6 +350,25 @@ export default function Clientes({ clientes, eliminados, filters }) {
                                     <p className="font-sans text-sm text-spa-on-light-dim dark:text-spa-on-dark-dim">
                                         {c.telefono ?? '—'}
                                     </p>
+                                </td>
+                                <td className="px-5 py-4">
+                                    {c.fidelizacion?.nivel > 0 ? (() => {
+                                        const cfgs = {
+                                            1: { cls: 'bg-emerald-400/10 text-emerald-300', icon: 'verified'  },
+                                            2: { cls: 'bg-blue-400/10 text-blue-300',       icon: 'diamond'   },
+                                            3: { cls: 'bg-gold/10 text-gold',               icon: 'star'      },
+                                        };
+                                        const cfg = cfgs[c.fidelizacion.nivel];
+                                        return (
+                                            <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full font-sans text-[9px] uppercase tracking-wider ${cfg.cls}`}>
+                                                <Icon name={cfg.icon} className="text-[11px]" />
+                                                {c.fidelizacion.label}
+                                                <span className="opacity-70">·{c.fidelizacion.descuento}%</span>
+                                            </span>
+                                        );
+                                    })() : (
+                                        <span className="font-sans text-[10px] text-spa-on-dark-dim/40">—</span>
+                                    )}
                                 </td>
                                 <td className="px-5 py-4">
                                     <span className="font-serif text-lg gold-gradient-text">{c.total_citas}</span>

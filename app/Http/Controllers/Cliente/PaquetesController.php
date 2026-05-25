@@ -27,12 +27,13 @@ class PaquetesController extends Controller
                 'fecha_fin'   => $p->fecha_fin->format('d/m/Y'),
                 'dias_restantes' => (int) now()->startOfDay()->diffInDays($p->fecha_fin),
                 'servicios'   => $p->servicios->map(fn($s) => [
-                    'id'     => $s->id,
-                    'nombre' => $s->nombre,
-                    'precio' => (float) $s->precio,
+                    'id'       => $s->id,
+                    'nombre'   => $s->nombre,
+                    'precio'   => (float) $s->precio,
+                    'cantidad' => (int) ($s->pivot->cantidad ?? 1),
                 ]),
-                'precio_original' => $p->servicios->sum('precio'),
-                'ahorro'          => max(0, $p->servicios->sum('precio') - (float) $p->precio),
+                'precio_original' => $p->servicios->sum(fn($s) => $s->precio * ($s->pivot->cantidad ?? 1)),
+                'ahorro'          => max(0, $p->servicios->sum(fn($s) => $s->precio * ($s->pivot->cantidad ?? 1)) - (float) $p->precio),
             ]);
 
         return Inertia::render('Cliente/Paquetes', [

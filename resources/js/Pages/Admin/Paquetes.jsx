@@ -43,18 +43,28 @@ function Field({ label, error, children }) {
 const inputCls = "w-full bg-spa-bg border border-gold/20 rounded-sm px-3 py-2.5 font-sans text-sm text-spa-on-dark placeholder:text-spa-on-dark-dim/40 focus:border-gold/60 focus:outline-none transition-colors";
 
 const BLANK = { nombre: '', descripcion: '', precio: '', fecha_inicio: '', fecha_fin: '', activo: true, servicios: [] };
+// servicios = [{id, cantidad}]
 
 function PaqueteForm({ form, servicios, onSubmit, onCancel, submitLabel }) {
-    const precioOriginal = servicios
-        .filter(s => form.data.servicios.includes(s.id))
-        .reduce((acc, s) => acc + s.precio, 0);
+    // Precio sumando precio×cantidad de cada servicio seleccionado
+    const precioOriginal = servicios.reduce((acc, s) => {
+        const sel = form.data.servicios.find(x => x.id === s.id);
+        return sel ? acc + s.precio * sel.cantidad : acc;
+    }, 0);
     const ahorro = precioOriginal - (parseFloat(form.data.precio) || 0);
 
     function toggleServicio(id) {
-        const sel = form.data.servicios.includes(id)
-            ? form.data.servicios.filter(s => s !== id)
-            : [...form.data.servicios, id];
-        form.setData('servicios', sel);
+        const isSelected = form.data.servicios.some(x => x.id === id);
+        form.setData('servicios', isSelected
+            ? form.data.servicios.filter(x => x.id !== id)
+            : [...form.data.servicios, { id, cantidad: 1 }]
+        );
+    }
+
+    function setCantidad(id, delta) {
+        form.setData('servicios', form.data.servicios.map(x =>
+            x.id === id ? { ...x, cantidad: Math.max(1, Math.min(10, x.cantidad + delta)) } : x
+        ));
     }
 
     return (
@@ -82,27 +92,69 @@ function PaqueteForm({ form, servicios, onSubmit, onCancel, submitLabel }) {
             </div>
 
             <Field label="Servicios incluidos" error={form.errors.servicios}>
-                <div className="grid grid-cols-2 gap-2 mt-1">
+                <p className="font-sans text-[9px] text-spa-on-dark-dim/60 mb-2">
+                    Haz clic para agregar. Usa <strong>+/-</strong> para repetir un servicio (2×1, 3×1, etc.)
+                </p>
+                <div className="space-y-1.5 mt-1">
                     {servicios.map(s => {
-                        const sel = form.data.servicios.includes(s.id);
+                        const sel = form.data.servicios.find(x => x.id === s.id);
+                        const isSelected = !!sel;
                         return (
-                            <button key={s.id} type="button" onClick={() => toggleServicio(s.id)}
-                                    className={`flex items-center gap-2 px-3 py-2 rounded-sm border text-left transition-all
-                                                ${sel
-                                                    ? 'border-gold/60 bg-gold/10 text-gold'
-                                                    : 'border-gold/15 text-spa-on-dark-dim hover:border-gold/30'}`}>
-                                <Icon name={sel ? 'check_box' : 'check_box_outline_blank'} className="text-[16px] shrink-0" />
-                                <div className="min-w-0">
-                                    <p className="font-sans text-xs truncate">{s.nombre}</p>
-                                    <p className="font-sans text-[9px] opacity-60">Bs {s.precio}</p>
+                            <div key={s.id}
+                                 className={`flex items-center gap-2 px-3 py-2 rounded-sm border transition-all
+                                             ${isSelected
+                                                 ? 'border-gold/50 bg-gold/[0.07]'
+                                                 : 'border-gold/10 hover:border-gold/25'}`}>
+                                {/* Toggle */}
+                                <button type="button" onClick={() => toggleServicio(s.id)}
+                                        className="shrink-0 text-gold/60 hover:text-gold transition-colors">
+                                    <Icon name={isSelected ? 'check_box' : 'check_box_outline_blank'} className="text-[18px]" />
+                                </button>
+
+                                {/* Nombre + precio */}
+                                <div className="flex-1 min-w-0">
+                                    <p className={`font-sans text-sm ${isSelected ? 'text-gold' : 'text-spa-on-dark-dim'}`}>
+                                        {s.nombre}
+                                    </p>
+                                    <p className="font-sans text-[9px] text-spa-on-dark-dim/50">
+                                        Bs {s.precio.toFixed(2)} / sesión
+                                    </p>
                                 </div>
-                            </button>
+
+                                {/* Badge 2×1 / 3×1 */}
+                                {isSelected && sel.cantidad >= 2 && (
+                                    <span className="px-2 py-0.5 bg-amber-400/15 text-amber-300 font-sans text-[9px] uppercase tracking-wider rounded-full">
+                                        {sel.cantidad}×1
+                                    </span>
+                                )}
+
+                                {/* Stepper cantidad */}
+                                {isSelected && (
+                                    <div className="flex items-center gap-1 shrink-0">
+                                        <button type="button" onClick={() => setCantidad(s.id, -1)}
+                                                className="w-6 h-6 rounded-sm border border-gold/20 text-gold/60 hover:text-gold hover:border-gold/50
+                                                           flex items-center justify-center font-sans text-sm leading-none transition-all">
+                                            −
+                                        </button>
+                                        <span className="w-5 text-center font-sans text-sm text-gold">
+                                            {sel.cantidad}
+                                        </span>
+                                        <button type="button" onClick={() => setCantidad(s.id, +1)}
+                                                className="w-6 h-6 rounded-sm border border-gold/20 text-gold/60 hover:text-gold hover:border-gold/50
+                                                           flex items-center justify-center font-sans text-sm leading-none transition-all">
+                                            +
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         );
                     })}
                 </div>
-                {form.data.servicios.length > 0 && (
+
+                {precioOriginal > 0 && (
                     <p className="font-sans text-[10px] text-spa-on-dark-dim mt-2">
-                        Precio individual: <span className="text-spa-on-dark">Bs {precioOriginal.toFixed(2)}</span>
+                        Precio individual total:{' '}
+                        <span className="text-spa-on-dark">Bs {precioOriginal.toFixed(2)}</span>
                     </p>
                 )}
             </Field>
@@ -163,7 +215,7 @@ export default function Paquetes({ paquetes, servicios }) {
             fecha_inicio: p.fecha_inicio,
             fecha_fin:    p.fecha_fin,
             activo:       p.activo,
-            servicios:    p.servicios.map(s => s.id),
+            servicios:    p.servicios.map(s => ({ id: s.id, cantidad: s.cantidad ?? 1 })),
         });
     }
 
@@ -184,12 +236,6 @@ export default function Paquetes({ paquetes, servicios }) {
     const vigentes  = paquetes.filter(p => p.vigente);
     const proximos  = paquetes.filter(p => !p.vigente && new Date(p.fecha_inicio) > new Date());
     const vencidos  = paquetes.filter(p => !p.vigente && new Date(p.fecha_fin) < new Date());
-
-    function StatusBadge({ p }) {
-        if (p.vigente)                              return <span className="badge-vigente">Vigente</span>;
-        if (new Date(p.fecha_inicio) > new Date())  return <span className="badge-proximo">Próximo</span>;
-        return <span className="badge-vencido">Vencido</span>;
-    }
 
     const badgeCls = "inline-flex items-center px-2 py-0.5 rounded-full font-sans text-[8px] uppercase tracking-wider";
 
@@ -263,8 +309,13 @@ export default function Paquetes({ paquetes, servicios }) {
                                 <td className="px-5 py-4">
                                     <div className="flex flex-wrap gap-1">
                                         {p.servicios.map(s => (
-                                            <span key={s.id} className="px-2 py-0.5 bg-gold/10 text-gold-mid dark:text-gold font-sans text-[9px] rounded-full">
+                                            <span key={s.id} className="inline-flex items-center gap-1 px-2 py-0.5 bg-gold/10 text-gold-mid dark:text-gold font-sans text-[9px] rounded-full">
                                                 {s.nombre}
+                                                {s.cantidad > 1 && (
+                                                    <span className="px-1 bg-amber-400/20 text-amber-300 rounded-full text-[8px]">
+                                                        ×{s.cantidad}
+                                                    </span>
+                                                )}
                                             </span>
                                         ))}
                                     </div>
@@ -273,7 +324,7 @@ export default function Paquetes({ paquetes, servicios }) {
                                 <td className="px-5 py-4">
                                     <p className="font-serif text-lg gold-gradient-text">Bs {p.precio.toFixed(2)}</p>
                                     {p.servicios.length > 0 && (() => {
-                                        const orig   = p.servicios.reduce((a, s) => a + s.precio, 0);
+                                        const orig   = p.servicios.reduce((a, s) => a + s.precio * (s.cantidad ?? 1), 0);
                                         const ahorro = orig - p.precio;
                                         return ahorro > 0 ? (
                                             <p className="font-sans text-[9px] text-green-400 mt-0.5">

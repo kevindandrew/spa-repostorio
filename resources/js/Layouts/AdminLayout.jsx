@@ -6,6 +6,7 @@ const NAV = [
     { label: 'Dashboard',    icon: 'dashboard',     route: 'admin.dashboard'          },
     { label: 'Citas',        icon: 'event',         route: 'admin.citas.index'        },
     { label: 'Servicios',    icon: 'auto_awesome',  route: 'admin.servicios.index'    },
+    { label: 'Categorías',   icon: 'category',      route: 'admin.categorias.index'   },
     { label: 'Paquetes',     icon: 'local_offer',   route: 'admin.paquetes.index'     },
     { label: 'Solicitudes',  icon: 'inbox',         route: 'admin.solicitudes.index', badge: true },
     { label: 'Especialistas',icon: 'groups',        route: 'admin.especialistas.index'},

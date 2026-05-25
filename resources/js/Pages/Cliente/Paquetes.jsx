@@ -65,6 +65,11 @@ function SolicitarModal({ paquete, onClose }) {
                             <div key={s.id} className="flex items-center gap-2">
                                 <Icon name="spa" className="text-gold/40 text-[13px]" />
                                 <span className="font-sans text-sm text-spa-on-dark-dim">{s.nombre}</span>
+                                {s.cantidad > 1 && (
+                                    <span className="px-1.5 py-0.5 bg-amber-400/15 text-amber-300 font-sans text-[9px] rounded-full">
+                                        ×{s.cantidad}
+                                    </span>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -218,9 +223,14 @@ export default function Paquetes({ paquetes }) {
                                             <div className="flex items-center gap-2">
                                                 <Icon name="spa" className="text-gold/40 text-[14px]" />
                                                 <span className="font-sans text-sm text-spa-on-light dark:text-spa-on-dark">{s.nombre}</span>
+                                                {s.cantidad > 1 && (
+                                                    <span className="px-1.5 py-0.5 bg-amber-400/15 text-amber-300 font-sans text-[9px] uppercase tracking-wider rounded-full">
+                                                        ×{s.cantidad}
+                                                    </span>
+                                                )}
                                             </div>
                                             <span className="font-sans text-xs text-spa-on-light-dim dark:text-spa-on-dark-dim">
-                                                Bs {s.precio.toFixed(2)}
+                                                Bs {(s.precio * s.cantidad).toFixed(2)}
                                             </span>
                                         </div>
                                     ))}

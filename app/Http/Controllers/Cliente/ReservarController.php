@@ -94,12 +94,16 @@ class ReservarController extends Controller
             );
         }
 
+        $fidelizacion = Auth::user()->cliente?->nivelFidelizacion()
+            ?? ['nivel' => 0, 'descuento' => 0, 'label' => null];
+
         return Inertia::render('Cliente/Reservar', [
             'servicios'       => $servicios,
             'empleados'       => $empleados,
             'slots'           => $slots,
             'diasDisponibles' => $diasDisponibles,
             'perfilEmpleado'  => $perfilEmpleado,
+            'fidelizacion'    => $fidelizacion,
             'preselect'       => [
                 'servicio_id' => $request->servicio_id,
                 'empleado_id' => $request->empleado_id,
@@ -137,14 +141,18 @@ class ReservarController extends Controller
 
         abort_if($conflict, 409, 'Este horario ya no está disponible. Por favor elige otro.');
 
+        $cliente      = Auth::user()->cliente;
+        $fidelizacion = $cliente->nivelFidelizacion();
+        $precioCobrado = round($servicio->precio * (1 - $fidelizacion['descuento'] / 100), 2);
+
         Cita::create([
-            'cliente_id'        => Auth::user()->cliente->id,
+            'cliente_id'        => $cliente->id,
             'empleado_id'       => $validated['empleado_id'],
             'servicio_id'       => $validated['servicio_id'],
             'fecha_hora_inicio' => $inicio,
             'fecha_hora_fin'    => $fin,
             'estado'            => 'PENDIENTE',
-            'precio_cobrado'    => $servicio->precio,
+            'precio_cobrado'    => $precioCobrado,
             'notas_cliente'     => $validated['notas_cliente'] ?? null,
         ]);
 

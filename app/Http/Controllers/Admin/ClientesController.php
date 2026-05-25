@@ -17,7 +17,9 @@ class ClientesController extends Controller
 {
     public function index(Request $request): Response
     {
-        $query = Cliente::with('usuario')->withCount('citas');
+        $query = Cliente::with('usuario')
+            ->withCount('citas')
+            ->withCount(['citas as citas_completadas' => fn($q) => $q->where('estado', 'COMPLETADA')]);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -43,6 +45,14 @@ class ClientesController extends Controller
                     ?->format('d/m/Y') ?? '—',
                 'usuario_id'    => $c->usuario_id,
                 'bloqueado'     => $c->usuario?->bloqueado_hasta && now()->isBefore($c->usuario->bloqueado_hasta),
+                'fidelizacion'  => (function () use ($c) {
+                    $meses       = (int) $c->created_at->diffInMonths(now());
+                    $completadas = (int) ($c->citas_completadas ?? 0);
+                    if ($meses >= 12)                          return ['nivel' => 3, 'descuento' => 15, 'label' => 'VIP'];
+                    if ($meses >= 6 && $completadas >= 5)      return ['nivel' => 2, 'descuento' => 10, 'label' => 'Frecuente'];
+                    if ($meses >= 3 && $completadas >= 2)      return ['nivel' => 1, 'descuento' =>  5, 'label' => 'Regular'];
+                    return ['nivel' => 0, 'descuento' => 0, 'label' => null];
+                })(),
             ]);
 
         $eliminados = Cliente::onlyTrashed()

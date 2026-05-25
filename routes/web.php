@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CitasController as AdminCitas;
 use App\Http\Controllers\Admin\ServiciosController as AdminServicios;
 use App\Http\Controllers\Admin\EspecialistasController as AdminEspecialistas;
 use App\Http\Controllers\Admin\ClientesController as AdminClientes;
+use App\Http\Controllers\Admin\CategoriasController as AdminCategorias;
 use App\Http\Controllers\Admin\PaquetesController as AdminPaquetes;
 use App\Http\Controllers\Admin\SolicitudesPaqueteController as AdminSolicitudes;
 use App\Http\Controllers\Cliente\PaquetesController as ClientePaquetes;
@@ -50,6 +51,12 @@ Route::middleware(['auth', 'role:ADMIN'])
         Route::patch('/citas/{cita}',       [AdminCitas::class, 'update'])->name('citas.update');
         Route::delete('/citas/{cita}',      [AdminCitas::class, 'destroy'])->name('citas.destroy');
 
+        // Categorías de servicios
+        Route::get('/categorias',               [AdminCategorias::class, 'index'])->name('categorias.index');
+        Route::post('/categorias',              [AdminCategorias::class, 'store'])->name('categorias.store');
+        Route::patch('/categorias/{categoria}', [AdminCategorias::class, 'update'])->name('categorias.update');
+        Route::delete('/categorias/{categoria}',[AdminCategorias::class, 'destroy'])->name('categorias.destroy');
+
         // Servicios
         Route::get('/servicios',            [AdminServicios::class, 'index'])->name('servicios.index');
         Route::post('/servicios',           [AdminServicios::class, 'store'])->name('servicios.store');
@@ -70,8 +77,9 @@ Route::middleware(['auth', 'role:ADMIN'])
         Route::delete('/paquetes/{paquete}', [AdminPaquetes::class, 'destroy'])->name('paquetes.destroy');
 
         // Solicitudes de paquete
-        Route::get('/solicitudes-paquetes',              [AdminSolicitudes::class, 'index'])->name('solicitudes.index');
-        Route::patch('/solicitudes-paquetes/{solicitud}', [AdminSolicitudes::class, 'update'])->name('solicitudes.update');
+        Route::get('/solicitudes-paquetes',                          [AdminSolicitudes::class, 'index'])->name('solicitudes.index');
+        Route::patch('/solicitudes-paquetes/{solicitud}',            [AdminSolicitudes::class, 'update'])->name('solicitudes.update');
+        Route::post('/solicitudes-paquetes/{solicitud}/asignar',     [AdminSolicitudes::class, 'asignarCitas'])->name('solicitudes.asignar');
 
         // Clientes
         Route::get('/clientes',                         [AdminClientes::class, 'index'])->name('clientes.index');

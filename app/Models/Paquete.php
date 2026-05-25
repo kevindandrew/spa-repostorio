@@ -33,7 +33,8 @@ class Paquete extends Model
 
     public function servicios(): BelongsToMany
     {
-        return $this->belongsToMany(Servicio::class, 'paquete_servicio');
+        return $this->belongsToMany(Servicio::class, 'paquete_servicio')
+                    ->withPivot('cantidad');
     }
 
     public function estaVigente(): bool

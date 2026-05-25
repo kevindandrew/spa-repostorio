@@ -1,4 +1,4 @@
-import { Head, useForm, router, usePage } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import ClienteLayout from '@/Layouts/ClienteLayout';
 import Stars from '@/Components/Stars';
@@ -18,7 +18,13 @@ function today() {
     return new Date().toISOString().split('T')[0];
 }
 
-export default function Reservar({ servicios, empleados, slots, diasDisponibles, perfilEmpleado, preselect }) {
+const NIVEL_CFG = {
+    1: { color: 'bg-emerald-400/10 border-emerald-400/20 text-emerald-300', dot: 'bg-emerald-400', icon: 'verified' },
+    2: { color: 'bg-blue-400/10 border-blue-400/20 text-blue-300',          dot: 'bg-blue-400',    icon: 'diamond'  },
+    3: { color: 'bg-gold/10 border-gold/20 text-gold',                      dot: 'bg-gold',        icon: 'star'     },
+};
+
+export default function Reservar({ servicios, empleados, slots, diasDisponibles, perfilEmpleado, preselect, fidelizacion }) {
     const [step, setStep]                   = useState(1);
     const [servicioId, setServicioId]       = useState(preselect?.servicio_id ?? null);
     const [empleadoId, setEmpleadoId]       = useState(preselect?.empleado_id ?? null);
@@ -150,6 +156,27 @@ export default function Reservar({ servicios, empleados, slots, diasDisponibles,
                     </div>
                 ))}
             </div>
+
+            {/* Banner fidelización */}
+            {fidelizacion?.nivel > 0 && (() => {
+                const cfg = NIVEL_CFG[fidelizacion.nivel];
+                return (
+                    <div className={`flex items-center gap-3 px-4 py-3 mb-6 rounded-sm border ${cfg.color}`}>
+                        <Icon name={cfg.icon} className="text-[20px] shrink-0" />
+                        <div className="flex-1 min-w-0">
+                            <p className="font-sans text-[9px] uppercase tracking-widest opacity-70">
+                                Beneficio de fidelización · Cliente {fidelizacion.label}
+                            </p>
+                            <p className="font-sans text-sm font-medium">
+                                {fidelizacion.descuento}% de descuento aplicado en tu próxima reserva
+                            </p>
+                        </div>
+                        <span className="font-serif text-xl shrink-0">
+                            −{fidelizacion.descuento}%
+                        </span>
+                    </div>
+                );
+            })()}
 
             {/* ── STEP 1: Elegir servicio ── */}
             {step === 1 && (
@@ -510,12 +537,34 @@ export default function Reservar({ servicios, empleados, slots, diasDisponibles,
                                 </div>
 
                                 <div className="border-t border-spa-border dark:border-gold/10 pt-4 mb-5">
+                                    {fidelizacion?.descuento > 0 && servicioActual && (
+                                        <div className="flex justify-between items-center mb-1">
+                                            <span className="font-sans text-[10px] text-spa-on-light-dim dark:text-spa-on-dark-dim uppercase tracking-wider">
+                                                Precio normal
+                                            </span>
+                                            <span className="font-sans text-sm text-spa-on-light-dim dark:text-spa-on-dark-dim line-through">
+                                                Bs {servicioActual.precio.toFixed(2)}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {fidelizacion?.descuento > 0 && (
+                                        <div className={`flex justify-between items-center mb-2 px-2 py-1 rounded-sm ${NIVEL_CFG[fidelizacion.nivel]?.color}`}>
+                                            <span className="font-sans text-[9px] uppercase tracking-wider">
+                                                Desc. fidelidad {fidelizacion.descuento}%
+                                            </span>
+                                            <span className="font-sans text-sm">
+                                                −Bs {(servicioActual?.precio * fidelizacion.descuento / 100).toFixed(2)}
+                                            </span>
+                                        </div>
+                                    )}
                                     <div className="flex justify-between items-center">
                                         <span className="font-sans text-xs text-spa-on-light-dim dark:text-spa-on-dark-dim uppercase tracking-wider">
                                             Total
                                         </span>
                                         <span className="font-serif text-2xl gold-gradient-text">
-                                            Bs {servicioActual?.precio.toFixed(2)}
+                                            Bs {servicioActual
+                                                ? (servicioActual.precio * (1 - (fidelizacion?.descuento ?? 0) / 100)).toFixed(2)
+                                                : '—'}
                                         </span>
                                     </div>
                                 </div>
