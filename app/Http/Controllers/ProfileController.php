@@ -45,6 +45,8 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        abort_if($request->user()->rol !== 'ADMIN', 403, 'Solo el administrador puede eliminar cuentas.');
+
         $request->validate([
             'password' => ['required', 'current_password'],
         ]);

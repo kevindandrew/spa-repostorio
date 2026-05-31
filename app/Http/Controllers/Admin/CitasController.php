@@ -149,14 +149,33 @@ class CitasController extends Controller
             'estado'            => ['sometimes', Rule::in(['PENDIENTE', 'CONFIRMADA', 'COMPLETADA', 'CANCELADA', 'NO_ASISTIO'])],
         ]);
 
-        $cita->update($validated);
+        // Resolve the effective values after this update
+        $empleadoId = $validated['empleado_id'] ?? $cita->empleado_id;
+        $servicioId = $validated['servicio_id']  ?? $cita->servicio_id;
+        $inicioRaw  = $validated['fecha_hora_inicio'] ?? $cita->fecha_hora_inicio;
 
-        if (isset($validated['fecha_hora_inicio']) || isset($validated['servicio_id'])) {
-            $servicio = Servicio::find($cita->servicio_id);
-            $cita->fecha_hora_fin = Carbon::parse($cita->fecha_hora_inicio)
-                ->addMinutes($servicio->duracion_minutos ?? 60);
-            $cita->save();
+        $servicio = Servicio::findOrFail($servicioId);
+        $inicio   = Carbon::parse($inicioRaw);
+        $fin      = $inicio->copy()->addMinutes($servicio->duracion_minutos ?? 60);
+
+        // Conflict check (same 15-min buffer as store/cliente), excluding this appointment
+        if (isset($validated['fecha_hora_inicio']) || isset($validated['empleado_id']) || isset($validated['servicio_id'])) {
+            $conflict = Cita::where('empleado_id', $empleadoId)
+                ->where('id', '!=', $cita->id)
+                ->whereNotIn('estado', ['CANCELADA'])
+                ->where('fecha_hora_inicio', '<', $fin->copy()->addMinutes(15))
+                ->where('fecha_hora_fin', '>', $inicio->copy()->subMinutes(15))
+                ->exists();
+
+            if ($conflict) {
+                return back()->withErrors(['fecha_hora_inicio' => 'El especialista no está disponible en ese horario (incluye 15 min de descanso entre citas).']);
+            }
         }
+
+        $cita->update([
+            ...$validated,
+            'fecha_hora_fin' => $fin,
+        ]);
 
         return back()->with('success', 'Cita actualizada.');
     }

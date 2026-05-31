@@ -35,10 +35,12 @@ export default function Edit({ mustVerifyEmail, status }) {
                     <UpdatePasswordForm />
                 </div>
 
-                {/* Zona de peligro */}
-                <div className="kpi-card border border-red-500/20">
-                    <DeleteUserForm />
-                </div>
+                {/* Zona de peligro — solo administrador */}
+                {auth.user?.rol === 'ADMIN' && (
+                    <div className="kpi-card border border-red-500/20">
+                        <DeleteUserForm />
+                    </div>
+                )}
 
             </div>
         </Layout>
