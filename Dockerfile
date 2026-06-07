@@ -17,6 +17,7 @@ RUN apk add --no-cache \
     curl \
     unzip \
     git \
+    ca-certificates \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
