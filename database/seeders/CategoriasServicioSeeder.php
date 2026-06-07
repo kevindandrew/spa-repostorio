@@ -18,7 +18,10 @@ class CategoriasServicioSeeder extends Seeder
         ];
 
         foreach ($categorias as $categoria) {
-            CategoriaServicio::create($categoria);
+            CategoriaServicio::firstOrCreate(
+                ['nombre' => $categoria['nombre']],
+                ['descripcion' => $categoria['descripcion']]
+            );
         }
     }
 }

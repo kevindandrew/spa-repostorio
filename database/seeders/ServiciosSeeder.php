@@ -49,7 +49,10 @@ class ServiciosSeeder extends Seeder
         foreach ($servicios as $categoriaNombre => $lista) {
             $categoria = CategoriaServicio::where('nombre', $categoriaNombre)->first();
             foreach ($lista as $data) {
-                Servicio::create(array_merge($data, ['categoria_id' => $categoria->id]));
+                Servicio::firstOrCreate(
+                    ['nombre' => $data['nombre'], 'categoria_id' => $categoria->id],
+                    array_diff_key($data, ['nombre' => ''])
+                );
             }
         }
     }

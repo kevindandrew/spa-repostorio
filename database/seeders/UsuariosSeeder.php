@@ -13,14 +13,16 @@ class UsuariosSeeder extends Seeder
     public function run(): void
     {
         // Admin
-        Usuario::create([
-            'nombre'            => 'Admin Spa',
-            'correo'            => 'admin@spa.com',
-            'password'          => Hash::make('password'),
-            'rol'               => 'ADMIN',
-            'correo_verificado' => true,
-            'activo'            => true,
-        ]);
+        Usuario::firstOrCreate(
+            ['correo' => 'admin@spa.com'],
+            [
+                'nombre'            => 'Admin Spa',
+                'password'          => Hash::make('password'),
+                'rol'               => 'ADMIN',
+                'correo_verificado' => true,
+                'activo'            => true,
+            ]
+        );
 
         // Empleados
         $empleados = [
@@ -72,8 +74,14 @@ class UsuariosSeeder extends Seeder
         ];
 
         foreach ($empleados as $data) {
-            $usuario = Usuario::create($data['usuario']);
-            Empleado::create(array_merge($data['perfil'], ['usuario_id' => $usuario->id]));
+            $usuario = Usuario::firstOrCreate(
+                ['correo' => $data['usuario']['correo']],
+                array_diff_key($data['usuario'], ['correo' => ''])
+            );
+            Empleado::firstOrCreate(
+                ['usuario_id' => $usuario->id],
+                $data['perfil']
+            );
         }
 
         // Clientes
@@ -84,15 +92,17 @@ class UsuariosSeeder extends Seeder
         ];
 
         foreach ($clientes as $data) {
-            $usuario = Usuario::create([
-                'nombre'            => $data['nombre'],
-                'correo'            => $data['correo'],
-                'password'          => Hash::make('password'),
-                'rol'               => 'CLIENTE',
-                'correo_verificado' => true,
-                'activo'            => true,
-            ]);
-            Cliente::create(['usuario_id' => $usuario->id]);
+            $usuario = Usuario::firstOrCreate(
+                ['correo' => $data['correo']],
+                [
+                    'nombre'            => $data['nombre'],
+                    'password'          => Hash::make('password'),
+                    'rol'               => 'CLIENTE',
+                    'correo_verificado' => true,
+                    'activo'            => true,
+                ]
+            );
+            Cliente::firstOrCreate(['usuario_id' => $usuario->id]);
         }
     }
 }
