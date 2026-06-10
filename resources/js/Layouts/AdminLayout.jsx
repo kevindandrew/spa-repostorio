@@ -12,6 +12,7 @@ const NAV = [
     { label: 'Solicitudes',  icon: 'inbox',         route: 'admin.solicitudes.index', badge: true },
     { label: 'Especialistas',icon: 'groups',        route: 'admin.especialistas.index'},
     { label: 'Clientes',     icon: 'person',        route: 'admin.clientes.index'     },
+    { label: 'Changelog',   icon: 'history',       route: 'admin.changelog'          },
 ];
 
 function Icon({ name, className = '' }) {

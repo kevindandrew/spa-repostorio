@@ -70,6 +70,9 @@ Route::middleware(['auth', 'role:ADMIN'])
         Route::delete('/especialistas/{empleado}',            [AdminEspecialistas::class, 'destroy'])->name('especialistas.destroy');
         Route::post('/especialistas/{usuario}/desbloquear',   [AdminEspecialistas::class, 'desbloquear'])->name('especialistas.desbloquear');
 
+        // Changelog
+        Route::get('/changelog', fn () => inertia('Admin/Changelog'))->name('changelog');
+
         // Paquetes / Promociones
         Route::get('/paquetes',              [AdminPaquetes::class, 'index'])->name('paquetes.index');
         Route::post('/paquetes',             [AdminPaquetes::class, 'store'])->name('paquetes.store');
