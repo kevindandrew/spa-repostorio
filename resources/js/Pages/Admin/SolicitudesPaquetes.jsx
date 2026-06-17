@@ -472,7 +472,7 @@ export default function SolicitudesPaquetes({ solicitudes, estado_filtro, pendie
                                             {s.servicios.slice(0, 3).map((sv, j) => (
                                                 <span key={j} className="px-1.5 py-0.5 bg-gold/5 border border-gold/10 rounded-sm
                                                                           font-sans text-[9px] text-spa-on-dark-dim">
-                                                    {sv}
+                                                    {sv.nombre}{sv.cantidad > 1 ? ` ×${sv.cantidad}` : ''}
                                                 </span>
                                             ))}
                                             {s.servicios.length > 3 && (
