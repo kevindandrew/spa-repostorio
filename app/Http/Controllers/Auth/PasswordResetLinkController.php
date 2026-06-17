@@ -7,7 +7,7 @@ use App\Models\TokenRecuperacion;
 use App\Models\Usuario;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
+use App\Services\BrevoMailer;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -49,9 +49,11 @@ class PasswordResetLinkController extends Controller
 
             $url = route('password.reset', ['token' => $token, 'correo' => $user->correo]);
 
-            Mail::raw(
-                "Hola {$user->nombre},\n\nRecibimos una solicitud para restablecer tu contraseña.\n\nHaz clic en el siguiente enlace (válido por 60 minutos):\n\n{$url}\n\nSi no solicitaste esto, ignora este mensaje.",
-                fn($m) => $m->to($user->correo)->subject('Restablecer contraseña — Spa')
+            BrevoMailer::send(
+                $user->correo,
+                $user->nombre ?? 'Usuario',
+                'Restablecer contraseña — Spa',
+                "Hola {$user->nombre},\n\nRecibimos una solicitud para restablecer tu contraseña.\n\nHaz clic en el siguiente enlace (válido por 60 minutos):\n\n{$url}\n\nSi no solicitaste esto, ignora este mensaje."
             );
         }
 

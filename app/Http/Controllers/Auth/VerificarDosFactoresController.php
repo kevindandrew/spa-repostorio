@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
+use App\Services\BrevoMailer;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -91,9 +91,11 @@ class VerificarDosFactoresController extends Controller
             'token_exp'          => now()->addMinutes(15),
         ])->saveQuietly();
 
-        Mail::raw(
-            "Hola {$user->nombre},\n\nTu código de verificación en dos pasos es:\n\n   {$codigo}\n\nVálido por 15 minutos.\n\nSi no iniciaste sesión, ignora este mensaje.",
-            fn($m) => $m->to($user->correo)->subject('Código 2FA — Spa')
+        BrevoMailer::send(
+            $user->correo,
+            $user->nombre ?? 'Empleado',
+            'Código 2FA — Spa',
+            "Hola {$user->nombre},\n\nTu código de verificación en dos pasos es:\n\n   {$codigo}\n\nVálido por 15 minutos.\n\nSi no iniciaste sesión, ignora este mensaje."
         );
     }
 }

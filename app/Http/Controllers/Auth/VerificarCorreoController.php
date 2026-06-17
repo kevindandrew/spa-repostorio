@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
+use App\Services\BrevoMailer;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -66,9 +66,11 @@ class VerificarCorreoController extends Controller
             'token_exp'          => now()->addMinutes(15),
         ])->saveQuietly();
 
-        Mail::raw(
-            "Hola {$user->nombre},\n\nTu código de verificación de correo es:\n\n   {$codigo}\n\nVálido por 15 minutos.\n\nSi no creaste esta cuenta, ignora este mensaje.",
-            fn($m) => $m->to($user->correo)->subject('Código de verificación — Spa')
+        BrevoMailer::send(
+            $user->correo,
+            $user->nombre ?? 'Cliente',
+            'Código de verificación — Spa',
+            "Hola {$user->nombre},\n\nTu código de verificación de correo es:\n\n   {$codigo}\n\nVálido por 15 minutos.\n\nSi no creaste esta cuenta, ignora este mensaje."
         );
 
         return $codigo;
